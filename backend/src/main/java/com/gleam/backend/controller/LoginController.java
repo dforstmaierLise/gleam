@@ -1,5 +1,6 @@
-package com.gleam.backend;
+package com.gleam.backend.controller;
 
+import com.gleam.backend.Login;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
