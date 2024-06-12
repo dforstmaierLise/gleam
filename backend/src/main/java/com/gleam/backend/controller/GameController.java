@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/games")
@@ -26,22 +24,18 @@ public class GameController {
 
     @GetMapping("/getGamesCount")
     public long getGamesCount(){
-        return getAllGames().size();
+        return gameService.getGamesCount();
     }
 
     @GetMapping("/getGamesWithPrefix")
     public List<Game> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix)
     {
-        return getAllGames().stream()
-                .filter(game -> game.getTitle().toLowerCase().startsWith(prefix.toLowerCase()))
-                .collect(Collectors.toList());
+        return gameService.getGamesWithPrefix(prefix);
     }
 
     @GetMapping("/getGameWithPrefix")
     public Game getGameWithPrefix(@RequestParam(value = "prefix") String prefix)
     {
-        return getGamesWithPrefix(prefix).stream()
-                .min(Comparator.comparing(Game::getTitle, String.CASE_INSENSITIVE_ORDER))
-                .orElse(null);
+        return gameService.getGameWithPrefix(prefix);
     }
 }
