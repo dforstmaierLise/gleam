@@ -52,11 +52,11 @@ public class GameService {
 
     public void addRating(Game game, Rating rating) {
         ratingRepository.save(rating);
-        if (game.getRatings() == null) {
-            game.setRatings(new ArrayList<>());
+        if (game.getRatingIds() == null) {
+            game.setRatingIds(new ArrayList<>());
         }
 
-        game.getRatings().add(rating);
+        game.getRatingIds().add(rating.getId());
         gameRepository.save(game);
     }
 
@@ -67,11 +67,12 @@ public class GameService {
 
         System.out.println("Game Title: " + game.getTitle());
 
-        List<Rating> ratings = game.getRatings();
-        if (!ratings.isEmpty()) {
+        var ratingIds = game.getRatingIds();
+        if (!ratingIds.isEmpty()) {
             System.out.println("Ratings:");
-            for (Rating rating : ratings) {
-                System.out.println("- " + rating.getRating() + " comment: " + rating.getComment());
+            var ratings = ratingRepository.findAllById(ratingIds);
+            for (var rating : ratings) {
+                System.out.println("- " + rating.getRating() + " stars. Comment: " + rating.getComment());
             }
         } else {
             System.out.println("No ratings found for this game.");
