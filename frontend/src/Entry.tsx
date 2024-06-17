@@ -1,3 +1,6 @@
+import { Game } from './data/Game.ts'
+import React from "react";
+
 function Card({ children }) {
     return (
         <div className="card">
@@ -6,24 +9,32 @@ function Card({ children }) {
     );
 }
 
-function Avatar({ name, rating }) {
+const Avatar : React.FC<GameComponentProps> = ({game}) => {
     return (
         <div>
-            <p>{name}</p>
+            <p>{game.name}</p>
             <img
                 className="avatar"
                 src="https://i.imgur.com/MK3eW3As.jpg"
-                alt={name}
+                alt={game.name}
             />
-            <p>Rating: {rating}</p>
+            <p>Rating: {game.rating}</p>
+            <p>Developer: {game.developer}</p>
+            <p>Release Date: {game.releaseDate.toDateString()}</p>
         </div>
     );
 }
 
-export default function Entry({name, rating}) {
+interface GameComponentProps {
+    game: Game;
+}
+
+const Entry : React.FC<GameComponentProps> = ({game}) => {
     return (
         <Card>
-            <Avatar name={name} rating={rating}/>
+            <Avatar game={game}/>
         </Card>
     );
 }
+
+export default Entry
