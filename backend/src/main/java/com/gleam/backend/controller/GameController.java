@@ -23,6 +23,12 @@ public class GameController {
     @Autowired
     private RatingMapper ratingMapper;
 
+    @GetMapping("/getGame")
+    public GameDto getGame(@RequestParam(value="title") String title) {
+        var game = gameService.getGame(title);
+        return gameMapper.toDto(game);
+    }
+
     @GetMapping("/getAllGames")
     public List<GameDto> getAllGames() {
         var games = gameService.getAllGames();
