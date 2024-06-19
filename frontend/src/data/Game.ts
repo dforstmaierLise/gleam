@@ -1,4 +1,5 @@
-export default interface GameDto {
+export type Game = {
+    id: string;
     title: string;
     releaseDate: string;
     developer: string;

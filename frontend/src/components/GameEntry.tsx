@@ -1,9 +1,9 @@
 import React from "react";
-import GameDto from "../data/GameDto.ts";
-import {addLike} from "../services/api.ts";
+import {addDislike, addLike} from "../services/api.ts";
+import {Game} from "../data/Game.ts";
 
 interface GameEntryProps{
-    game: GameDto;
+    game: Game;
     onOpen: () => void;
     onLike: () => void;
 }
@@ -21,9 +21,19 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onOpen, onLike}) => {
     const handleOpen = () => {
         onOpen();
     };
-    const handleAddLike = async (title:string, like:number) => {
+
+    const handleAddLike = async (id:string) => {
         try {
-            await addLike(title, like);
+            await addLike(id);
+            onLike();
+        } catch(error){
+            console.error(error);
+        }
+    }
+
+    const handleAddDislike = async (id:string) => {
+        try {
+            await addDislike(id);
             onLike();
         } catch(error){
             console.error(error);
@@ -44,8 +54,8 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onOpen, onLike}) => {
                 <p className="detailItem">Dislikes: { game.dislikes }</p>
                 <p className="detailItem">Ratings: { game.reviewIds?.length ?? 0 } Ratings</p>
                 <div className="detailItem buttonList">
-                    <button onClick={ () => handleAddLike(game.title, 1) }>Like</button>
-                    <button onClick={ () => handleAddLike(game.title, -1) }>Dislike</button>
+                    <button onClick={ () => handleAddLike(game.id) }>Like</button>
+                    <button onClick={ () => handleAddDislike(game.id) }>Dislike</button>
                     <button disabled={true} onClick={ handleOpen }>Add review</button>
                 </div>
             </div>

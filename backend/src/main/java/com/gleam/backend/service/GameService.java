@@ -43,9 +43,9 @@ public class GameService {
                 .orElse(null);
     }
 
-    public Game getGame(String title) {
+    public Game getGame(String id) {
         return getAllGames().stream()
-                .filter(game -> game.getTitle().equalsIgnoreCase(title))
+                .filter(game -> game.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
@@ -75,9 +75,15 @@ public class GameService {
         return null;
     }
 
-    public void addLike(Game game, int like)
+    public void addLike(Game game)
     {
-        game.addLike(like);
+        game.setLikes( game.getLikes() + 1);
+        gameRepository.save(game);
+    }
+
+    public void addDislike(Game game)
+    {
+        game.setDislikes( game.getDislikes() + 1);
         gameRepository.save(game);
     }
 

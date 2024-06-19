@@ -1,7 +1,7 @@
 import {getAllGames} from "../services/api.ts";
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import GameDto from "../data/GameDto.ts";
+import { FunctionComponent, useEffect, useState } from 'react';
 import GameEntry from "./GameEntry.tsx";
+import {Game} from "../data/Game.ts";
 
 interface PopupProps{
     onOpen: () => void;
@@ -9,7 +9,7 @@ interface PopupProps{
 
 const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
 
-    const [allGames, setAllGames ] = useState<GameDto[]>();
+    const [allGames, setAllGames ] = useState<Game[]>();
 
     useEffect(() => {
         refreshGames();
@@ -17,7 +17,7 @@ const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
 
     const refreshGames = async() => {
         try {
-            const data:GameDto[] = await getAllGames();
+            const data:Game[] = await getAllGames();
             setAllGames(data);
         } catch (error){
             console.log(error);
@@ -40,7 +40,7 @@ const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
                 <h1>Amazing games</h1>
                 {allGames?.map((game) => (
                     <article>
-                        <GameEntry key={game.title} game={game} onOpen={handleOpen} onLike={handleLike} />
+                        <GameEntry key={game.id} game={game} onOpen={handleOpen} onLike={handleLike} />
                     </article>
                 ))}
             </div>

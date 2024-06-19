@@ -24,8 +24,8 @@ public class GameController {
     private RatingMapper ratingMapper;
 
     @GetMapping("/getGame")
-    public GameDto getGame(@RequestParam(value="title") String title) {
-        var game = gameService.getGame(title);
+    public GameDto getGame(@RequestParam(value="id") String id) {
+        var game = gameService.getGame(id);
         return gameMapper.toDto(game);
     }
 
@@ -62,15 +62,22 @@ public class GameController {
     }
 
     @PostMapping("/addLike")
-    public GameDto addLike(@RequestParam(value = "title") String title, @RequestParam(value = "like") int like) {
-        var game = gameService.getGame(title);
-        gameService.addLike(game, like);
+    public GameDto addLike(@RequestParam(value = "id") String id) {
+        var game = gameService.getGame(id);
+        gameService.addLike(game);
+        return gameMapper.toDto(game);
+    }
+
+    @PostMapping("/addDislike")
+    public GameDto addDislike(@RequestParam(value = "id") String id) {
+        var game = gameService.getGame(id);
+        gameService.addDislike(game);
         return gameMapper.toDto(game);
     }
 
     @GetMapping("/displayGameDetails")
-    public void displayGameDetails(@RequestParam(value = "title") String title) {
-        var game = gameService.getGame(title);
+    public void displayGameDetails(@RequestParam(value = "id") String id) {
+        var game = gameService.getGame(id);
         gameService.displayGameDetails(game);
     }
 }
