@@ -5,7 +5,6 @@ import com.gleam.backend.dto.ReviewDto;
 import com.gleam.backend.mapper.GameMapper;
 import com.gleam.backend.mapper.RatingMapper;
 import com.gleam.backend.service.GameService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,19 +13,22 @@ import java.util.List;
 @RequestMapping("/api/games")
 public class GameController {
 
-    @Autowired
-    private GameService gameService;
+    private final GameService gameService;
 
-    @Autowired
-    private GameMapper gameMapper;
+    private final GameMapper gameMapper;
 
-    @Autowired
-    private RatingMapper ratingMapper;
+    private final RatingMapper ratingMapper;
+
+    public GameController(GameService gameService, GameMapper gameMapper, RatingMapper ratingMapper) {
+        this.gameService = gameService;
+        this.gameMapper = gameMapper;
+        this.ratingMapper = ratingMapper;
+    }
 
     @GetMapping("/getGame")
     public GameDto getGame(@RequestParam(value="id") String id) {
-        var game = gameService.getGame(id);
-        return gameMapper.toDto(game);
+        var optionalGame = gameService.getGame(id);
+        return optionalGame.map(gameMapper::toDto).orElse(null);
     }
 
     @GetMapping("/getAllGames")
@@ -54,30 +56,37 @@ public class GameController {
 
     @PostMapping("/addReview")
     public void addReview(@RequestBody ReviewDto reviewDto) {
-        var game = gameService.getGame(reviewDto.title());
-        if (game != null) {
-            var rating = ratingMapper.toEntity(reviewDto);
-            gameService.addRating(game, rating);
+        var optionalGame = gameService.getGame(reviewDto.title());
+        if( optionalGame.isEmpty() )
+        {
+            return;
         }
+
+        var rating = ratingMapper.toEntity(reviewDto);
+        gameService.addRating(optionalGame.get(), rating);
     }
 
     @PostMapping("/addLike")
     public GameDto addLike(@RequestParam(value = "id") String id) {
         var game = gameService.getGame(id);
-        gameService.addLike(game);
-        return gameMapper.toDto(game);
+        if( game.isEmpty() )
+        {
+            return null;
+        }
+
+        gameService.addLike(game.get());
+        return gameMapper.toDto(game.get());
     }
 
     @PostMapping("/addDislike")
     public GameDto addDislike(@RequestParam(value = "id") String id) {
         var game = gameService.getGame(id);
-        gameService.addDislike(game);
-        return gameMapper.toDto(game);
-    }
+        if( game.isEmpty() )
+        {
+            return null;
+        }
 
-    @GetMapping("/displayGameDetails")
-    public void displayGameDetails(@RequestParam(value = "id") String id) {
-        var game = gameService.getGame(id);
-        gameService.displayGameDetails(game);
+        gameService.addDislike(game.get());
+        return gameMapper.toDto(game.get());
     }
 }
