@@ -1,7 +1,7 @@
 package com.gleam.backend.controller;
 
 import com.gleam.backend.dto.GameDto;
-import com.gleam.backend.dto.RatingDto;
+import com.gleam.backend.dto.ReviewDto;
 import com.gleam.backend.mapper.GameMapper;
 import com.gleam.backend.mapper.RatingMapper;
 import com.gleam.backend.service.GameService;
@@ -52,13 +52,20 @@ public class GameController {
         return gameMapper.toDto(game);
     }
 
-    @PostMapping("/addRating")
-    public void addRating(@RequestBody RatingDto ratingDto) {
-        var game = gameService.getGame(ratingDto.title());
+    @PostMapping("/addReview")
+    public void addReview(@RequestBody ReviewDto reviewDto) {
+        var game = gameService.getGame(reviewDto.title());
         if (game != null) {
-            var rating = ratingMapper.toEntity(ratingDto);
+            var rating = ratingMapper.toEntity(reviewDto);
             gameService.addRating(game, rating);
         }
+    }
+
+    @PostMapping("/addLike")
+    public GameDto addLike(@RequestParam(value = "title") String title, @RequestParam(value = "like") int like) {
+        var game = gameService.getGame(title);
+        gameService.addLike(game, like);
+        return gameMapper.toDto(game);
     }
 
     @GetMapping("/displayGameDetails")

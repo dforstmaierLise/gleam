@@ -13,7 +13,9 @@ public class Game {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date releaseDate;
     private String developer;
-    private List<String> ratingIds;
+    private List<String> reviewIds;
+    private int likes;
+    private int dislikes;
 
     public String getTitle() {
         return title;
@@ -27,11 +29,39 @@ public class Game {
         return developer;
     }
 
-    public List<String> getRatingIds() {
-        return ratingIds;
+    public List<String> getReviewIds() {
+        return reviewIds;
     }
 
-    public void setRatingIds(List<String> ratingIds) {
-        this.ratingIds = ratingIds;
+    public void setReviewIds(List<String> reviewIds) {
+        this.reviewIds = reviewIds;
+    }
+
+    public void addLike(int like)
+    {
+        if( like > 0 )
+        {
+            ++likes;
+        }
+        else if( like < 0)
+        {
+            ++dislikes;
+        }
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 }
