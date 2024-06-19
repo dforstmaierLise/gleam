@@ -35,7 +35,7 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onOpen, onLike}) => {
 
     return (
         <div className="gameCard">
-            <img src={logoUrl} />
+            <img src={logoUrl}  alt={"game logo"}/>
             <div className="containerDetails">
                 <h4 className="detailItem"><b>{ game.title }</b></h4>
                 <p className="detailItem">Release-Date: { game.releaseDate }</p>
@@ -46,7 +46,7 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onOpen, onLike}) => {
                 <div className="detailItem buttonList">
                     <button onClick={ () => handleAddLike(game.title, 1) }>Like</button>
                     <button onClick={ () => handleAddLike(game.title, -1) }>Dislike</button>
-                    <button onClick={ handleOpen }>Add review</button>
+                    <button disabled={true} onClick={ handleOpen }>Add review</button>
                 </div>
             </div>
         </div>

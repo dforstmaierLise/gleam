@@ -38,10 +38,9 @@ const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
         <div>
             <div className="listGames">
                 <h1>Amazing games</h1>
-                <button onClick={handleOpen}>Add rating</button>
                 {allGames?.map((game) => (
                     <article>
-                        <GameEntry key={game.title} game={game} onOpen={onOpen} onLike={handleLike} />
+                        <GameEntry key={game.title} game={game} onOpen={handleOpen} onLike={handleLike} />
                     </article>
                 ))}
             </div>
