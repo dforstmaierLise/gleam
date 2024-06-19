@@ -1,7 +1,7 @@
 package com.gleam.backend.service;
 
 import com.gleam.backend.model.Game;
-import com.gleam.backend.model.Rating;
+import com.gleam.backend.model.Review;
 import com.gleam.backend.repository.GameRepository;
 import com.gleam.backend.repository.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +50,34 @@ public class GameService {
                 .orElse(null);
     }
 
-    public void addRating(Game game, Rating rating) {
-        ratingRepository.save(rating);
-        if (game.getRatingIds() == null) {
-            game.setRatingIds(new ArrayList<>());
+    public void addRating(Game game, Review review) {
+        ratingRepository.save(review);
+        if (game.getReviewIds() == null) {
+            game.setReviewIds(new ArrayList<>());
         }
 
-        game.getRatingIds().add(rating.getId());
+        game.getReviewIds().add(review.getId());
+        gameRepository.save(game);
+    }
+
+
+    public List<Review> getRatings(Game game)
+    {
+        if( game == null) {
+            return null;
+        }
+
+        var ratingIds = game.getReviewIds();
+        if (!ratingIds.isEmpty()) {
+            return ratingRepository.findAllById(ratingIds);
+        }
+
+        return null;
+    }
+
+    public void addLike(Game game, int like)
+    {
+        game.addLike(like);
         gameRepository.save(game);
     }
 
@@ -67,15 +88,12 @@ public class GameService {
 
         System.out.println("Game Title: " + game.getTitle());
 
-        var ratingIds = game.getRatingIds();
-        if (!ratingIds.isEmpty()) {
-            System.out.println("Ratings:");
-            var ratings = ratingRepository.findAllById(ratingIds);
+        var ratings = getRatings(game);
+        if( ratings != null )
+        {
             for (var rating : ratings) {
-                System.out.println("- " + rating.getRating() + " stars. Comment: " + rating.getComment());
+                System.out.println("Comment: " + rating.getComment());
             }
-        } else {
-            System.out.println("No ratings found for this game.");
         }
     }
 }

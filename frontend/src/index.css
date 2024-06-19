@@ -22,14 +22,6 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -65,4 +57,56 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Add some padding inside the card container */
+.containerDetails {
+  padding: 2px 16px;
+  /*align-self: center;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.detailItem {
+
+}
+
+.containerDetails .detailItem:last-child {
+  margin-top: auto;
+  margin-bottom: 16px;
+  align-self: center;
+}
+
+.buttonList {
+  display: flex;
+  gap: 5px;
+
+}
+
+
+
+.containerGames{
+  display: flex;
+  align-items: center ;
+}
+
+.listGames {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.gameCard {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  background-color: #4a4a4a;
+  display: flex;
+}
+
+.gameCard:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  transform: scale(1.05);
 }
