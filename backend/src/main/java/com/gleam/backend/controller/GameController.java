@@ -1,12 +1,12 @@
 package com.gleam.backend.controller;
 
-import com.gleam.backend.model.Game;
+import com.gleam.backend.dto.GameDto;
+import com.gleam.backend.dto.RatingDto;
+import com.gleam.backend.mapper.GameMapper;
+import com.gleam.backend.mapper.RatingMapper;
 import com.gleam.backend.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,9 +17,16 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private GameMapper gameMapper;
+
+    @Autowired
+    private RatingMapper ratingMapper;
+
     @GetMapping("/getAllGames")
-    public List<Game> getAllGames() {
-        return gameService.getAllGames();
+    public List<GameDto> getAllGames() {
+        var games = gameService.getAllGames();
+        return gameMapper.toDtoList(games);
     }
 
     @GetMapping("/getGamesCount")
@@ -28,14 +35,29 @@ public class GameController {
     }
 
     @GetMapping("/getGamesWithPrefix")
-    public List<Game> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix)
-    {
-        return gameService.getGamesWithPrefix(prefix);
+    public List<GameDto> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix) {
+        var games = gameService.getGamesWithPrefix(prefix);
+        return gameMapper.toDtoList(games);
     }
 
     @GetMapping("/getGameWithPrefix")
-    public Game getGameWithPrefix(@RequestParam(value = "prefix") String prefix)
-    {
-        return gameService.getGameWithPrefix(prefix);
+    public GameDto getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
+        var game = gameService.getGameWithPrefix(prefix);
+        return gameMapper.toDto(game);
+    }
+
+    @PostMapping("/addRating")
+    public void addRating(@RequestBody RatingDto ratingDto) {
+        var game = gameService.getGame(ratingDto.title());
+        if (game != null) {
+            var rating = ratingMapper.toEntity(ratingDto);
+            gameService.addRating(game, rating);
+        }
+    }
+
+    @GetMapping("/displayGameDetails")
+    public void displayGameDetails(@RequestParam(value = "title") String title) {
+        var game = gameService.getGame(title);
+        gameService.displayGameDetails(game);
     }
 }
