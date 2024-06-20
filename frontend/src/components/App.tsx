@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import Popup from "./PopupRateGame.tsx";
 import GameTable from "./GameTable.tsx";
+import './App.css';
 
 const App: React.FC = () => {
     const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
-
-    const handleArticleClick = () => {
-        setIsPopupVisible(true);
-    };
 
     const handleClosePopup = () => {
         setIsPopupVisible(false);
@@ -15,7 +12,7 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <GameTable onOpen={handleArticleClick}/>
+            <GameTable/>
             {isPopupVisible && <Popup onClose={handleClosePopup}/>}
         </div>
     );
