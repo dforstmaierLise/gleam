@@ -1,11 +1,9 @@
-package com.gleam.backend.controller;
+package com.gleam.backend.game.ui;
 
-import com.gleam.backend.dto.GameDto;
-import com.gleam.backend.dto.ReviewDto;
-import com.gleam.backend.mapper.GameMapper;
-import com.gleam.backend.mapper.RatingMapper;
-import com.gleam.backend.model.Game;
-import com.gleam.backend.service.GameService;
+import com.gleam.backend.game.application.GameService;
+import com.gleam.backend.game.domain.Game;
+import com.gleam.backend.game.mapper.GameMapper;
+import com.gleam.backend.game.ui.dto.GameDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +19,9 @@ public class GameController {
 
     private final GameMapper gameMapper;
 
-    private final RatingMapper ratingMapper;
-
-    public GameController(GameService gameService, GameMapper gameMapper, RatingMapper ratingMapper) {
+    public GameController(GameService gameService, GameMapper gameMapper) {
         this.gameService = gameService;
         this.gameMapper = gameMapper;
-        this.ratingMapper = ratingMapper;
     }
 
     @GetMapping("/getGame")
@@ -64,18 +59,6 @@ public class GameController {
     @GetMapping("/getGameWithPrefix")
     public ResponseEntity<GameDto> getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
         return createReponseEntity(gameService.getGameWithPrefix(prefix));
-    }
-
-    @PostMapping("/addReview")
-    public ResponseEntity<Void> addReview(@RequestBody ReviewDto reviewDto) {
-        var optionalGame = gameService.getGame(reviewDto.title());
-        if (optionalGame.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        var rating = ratingMapper.toEntity(reviewDto);
-        gameService.addRating(optionalGame.get(), rating);
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/addLike")

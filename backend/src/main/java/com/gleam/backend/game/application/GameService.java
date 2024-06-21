@@ -1,9 +1,7 @@
-package com.gleam.backend.service;
+package com.gleam.backend.game.application;
 
-import com.gleam.backend.model.Game;
-import com.gleam.backend.model.Review;
-import com.gleam.backend.repository.GameRepository;
-import com.gleam.backend.repository.RatingRepository;
+import com.gleam.backend.game.domain.Game;
+import com.gleam.backend.game.infrastructure.GameRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -16,11 +14,8 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    private final RatingRepository ratingRepository;
-
-    public GameService(GameRepository gameRepository, RatingRepository ratingRepository) {
+    public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.ratingRepository = ratingRepository;
     }
 
     public List<Game> getAllGames() {
@@ -47,13 +42,7 @@ public class GameService {
                 .filter(game -> game.getId().equals(id))
                 .findFirst();
     }
-
-    public void addRating(Game game, Review review) {
-        ratingRepository.save(review);
-        game.getReviewIds().add(review.getId());
-        gameRepository.save(game);
-    }
-
+    
     public void addLike(Game game) {
         game.setLikes(game.getLikes() + 1);
         gameRepository.save(game);
