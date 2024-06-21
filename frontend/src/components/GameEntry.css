@@ -1,0 +1,52 @@
+.root{
+    --glow-intensity: 0.0
+}
+@keyframes pulsate {
+    0% {
+        box-shadow: 0 0 calc((var(--glow-intensity) * 20px)) rgba(255, 192, 0, calc((var(--glow-intensity) * 0.5)));
+    }
+    50% {
+        box-shadow: 0 0 calc((var(--glow-intensity) * 40px)) rgba(255, 192, 0, calc((var(--glow-intensity) * 1.0)));
+    }
+    100% {
+        box-shadow: 0 0 calc((var(--glow-intensity) * 20px)) rgba(255, 192, 0, calc((var(--glow-intensity) * 0.5)));
+    }
+}
+
+
+.gameCard {
+    border-radius: 10px;
+    background-color: #4a4a4a;
+    display: flex;
+    animation: pulsate 4s infinite;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.gameCard:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transform: scale(1.05);
+}
+
+
+.containerDetails {
+    padding: 2px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 450px;
+}
+
+.detailItem {
+
+}
+
+.containerDetails .detailItem:last-child {
+    margin-top: auto;
+    margin-bottom: 16px;
+    align-self: center;
+}
+
+.buttonList {
+    display: flex;
+    gap: 15px;
+}
