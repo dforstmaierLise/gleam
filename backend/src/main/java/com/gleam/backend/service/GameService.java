@@ -27,19 +27,17 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public long getGamesCount(){
+    public long getGamesCount() {
         return gameRepository.count();
     }
 
-    public List<Game> getGamesWithPrefix(String prefix)
-    {
+    public List<Game> getGamesWithPrefix(String prefix) {
         return getAllGames().stream()
                 .filter(game -> game.getTitle().toLowerCase().startsWith(prefix.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
-    public Optional<Game> getGameWithPrefix(String prefix)
-    {
+    public Optional<Game> getGameWithPrefix(String prefix) {
         return getGamesWithPrefix(prefix).stream()
                 .min(Comparator.comparing(Game::getTitle, String.CASE_INSENSITIVE_ORDER));
     }
@@ -56,15 +54,13 @@ public class GameService {
         gameRepository.save(game);
     }
 
-    public void addLike(Game game)
-    {
-        game.setLikes( game.getLikes() + 1);
+    public void addLike(Game game) {
+        game.setLikes(game.getLikes() + 1);
         gameRepository.save(game);
     }
 
-    public void addDislike(Game game)
-    {
-        game.setDislikes( game.getDislikes() + 1);
+    public void addDislike(Game game) {
+        game.setDislikes(game.getDislikes() + 1);
         gameRepository.save(game);
     }
 }

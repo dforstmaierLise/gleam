@@ -8,12 +8,12 @@ export const getAllGames = async () => {
     return response.data;
 }
 
-export const addLike = async (id : string ) => {
+export const addLike = async (id: string) => {
     const response = await axios.post<Game>(`${API_URL}/api/games/addLike?id=${id}`);
     return response.data;
 }
 
-export const addDislike = async (id : string ) => {
+export const addDislike = async (id: string) => {
     const response = await axios.post<Game>(`${API_URL}/api/games/addDislike?id=${id}`);
     return response.data;
 }

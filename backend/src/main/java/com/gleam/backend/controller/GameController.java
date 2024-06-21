@@ -30,15 +30,14 @@ public class GameController {
     }
 
     @GetMapping("/getGame")
-    public ResponseEntity<GameDto> getGame(@RequestParam(value="id") String id) {
-       return createReponseEntity( gameService.getGame(id) );
+    public ResponseEntity<GameDto> getGame(@RequestParam(value = "id") String id) {
+        return createReponseEntity(gameService.getGame(id));
     }
 
-    private ResponseEntity<GameDto> createReponseEntity(Optional<Game> optionalGame)
-    {
+    private ResponseEntity<GameDto> createReponseEntity(Optional<Game> optionalGame) {
         return optionalGame
                 .map(gameMapper::toDto)
-                .map(gameDto -> new ResponseEntity<>(gameDto, HttpStatus.OK ))
+                .map(gameDto -> new ResponseEntity<>(gameDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -50,7 +49,7 @@ public class GameController {
     }
 
     @GetMapping("/getGamesCount")
-    public ResponseEntity<Long> getGamesCount(){
+    public ResponseEntity<Long> getGamesCount() {
         var count = gameService.getGamesCount();
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
@@ -64,14 +63,13 @@ public class GameController {
 
     @GetMapping("/getGameWithPrefix")
     public ResponseEntity<GameDto> getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
-        return createReponseEntity(gameService.getGameWithPrefix(prefix) );
+        return createReponseEntity(gameService.getGameWithPrefix(prefix));
     }
 
     @PostMapping("/addReview")
     public ResponseEntity<Void> addReview(@RequestBody ReviewDto reviewDto) {
         var optionalGame = gameService.getGame(reviewDto.title());
-        if( optionalGame.isEmpty() )
-        {
+        if (optionalGame.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -83,8 +81,7 @@ public class GameController {
     @PostMapping("/addLike")
     public ResponseEntity<GameDto> addLike(@RequestParam(value = "id") String id) {
         var game = gameService.getGame(id);
-        if( game.isEmpty() )
-        {
+        if (game.isEmpty()) {
             return null;
         }
 
@@ -95,8 +92,7 @@ public class GameController {
     @PostMapping("/addDislike")
     public ResponseEntity<GameDto> addDislike(@RequestParam(value = "id") String id) {
         var game = gameService.getGame(id);
-        if( game.isEmpty() )
-        {
+        if (game.isEmpty()) {
             return null;
         }
 
