@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Popup from "./PopupRateGame.tsx";
 import GameTable from "./GameTable.tsx";
 import './App.css';

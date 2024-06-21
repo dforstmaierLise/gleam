@@ -1,25 +1,25 @@
 import {getAllGames} from "../services/api.ts";
-import { FunctionComponent, useEffect, useState } from 'react';
+import {FunctionComponent, useEffect, useState} from 'react';
 import GameEntry from "./GameEntry.tsx";
 import {Game} from "../data/Game.ts";
 import './GameTable.css';
 
-interface PopupProps{
+interface PopupProps {
 }
 
 const GameTable: FunctionComponent<PopupProps> = () => {
 
-    const [allGames, setAllGames ] = useState<Game[]>();
+    const [allGames, setAllGames] = useState<Game[]>();
 
     useEffect(() => {
         refreshGames();
     }, []);
 
-    const refreshGames = async() => {
+    const refreshGames = async () => {
         try {
-            const data:Game[] = await getAllGames();
+            const data: Game[] = await getAllGames();
             setAllGames(data);
-        } catch (error){
+        } catch (error) {
             console.log(error);
         }
     }
@@ -34,7 +34,7 @@ const GameTable: FunctionComponent<PopupProps> = () => {
                 <h1>Glamorous games</h1>
                 {allGames?.map((game) => (
                     <article>
-                        <GameEntry key={game.id} game={game} onLike={handleLike} />
+                        <GameEntry key={game.id} game={game} onLike={handleLike}/>
                     </article>
                 ))}
             </div>

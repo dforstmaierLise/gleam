@@ -6,7 +6,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import {Badge, BadgeProps, IconButton, styled} from "@mui/material";
 
-interface GameEntryProps{
+interface GameEntryProps {
     game: Game;
     onOpen: () => void;
     onLike: () => void;
@@ -18,8 +18,8 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
     },
 }));
 
-const GameEntry : React.FC<GameEntryProps> = ({game, onLike}) => {
-    if( !game ){
+const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
+    if (!game) {
         return null;
     }
 
@@ -27,9 +27,9 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onLike}) => {
         return gameName.toLowerCase().replace(/ /g, '_');
     };
 
-    const calcGlamFactor = (likes:number, dislikes:number) : number => {
+    const calcGlamFactor = (likes: number, dislikes: number): number => {
         const sum = likes + dislikes;
-        const factor = likes/sum;
+        const factor = likes / sum;
         // Return the exponential value to add more visual emphasis on very good games
         return factor * factor;
     }
@@ -38,7 +38,7 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onLike}) => {
         try {
             await addLike(game.id);
             onLike();
-        } catch(error){
+        } catch (error) {
             console.error(error);
         }
     }
@@ -47,7 +47,7 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onLike}) => {
         try {
             await addDislike(game.id);
             onLike();
-        } catch(error){
+        } catch (error) {
             console.error(error);
         }
     }
@@ -62,20 +62,20 @@ const GameEntry : React.FC<GameEntryProps> = ({game, onLike}) => {
             style={{
                 '--glow-intensity': `${glamFactor}`,
             }}>
-            <img src={logoUrl}  alt={"game logo"}/>
+            <img src={logoUrl} alt={"game logo"}/>
             <div className="containerDetails">
-                <h4 className="detailItem"><b>{ game.title }</b></h4>
+                <h4 className="detailItem"><b>{game.title}</b></h4>
                 <div className="detailItem">
-                    <p className="detailItem">Glam score: <b>{ (glamFactor * 100).toFixed(0) }</b></p>
-                    <p className="detailItem">Developer: { game.developer }</p>
-                    <p className="detailItem">Release-Date: { game.releaseDate }</p>
+                    <p className="detailItem">Glam score: <b>{(glamFactor * 100).toFixed(0)}</b></p>
+                    <p className="detailItem">Developer: {game.developer}</p>
+                    <p className="detailItem">Release-Date: {game.releaseDate}</p>
                 </div>
                 <div className="detailItem buttonList">
-                    <IconButton value="thumbs-up" aria-label="thumbs up" onClick={ handleAddLike }>
+                    <IconButton value="thumbs-up" aria-label="thumbs up" onClick={handleAddLike}>
                         <ThumbUpIcon/>
                     </IconButton>
                     <StyledBadge badgeContent={game.likes} color="primary" overlap="rectangular" max={9999}/>
-                    <IconButton value="thumbs-down" aria-label="thumbs down" onClick={ handleAddDislike }>
+                    <IconButton value="thumbs-down" aria-label="thumbs down" onClick={handleAddDislike}>
                         <ThumbDownIcon/>
                     </IconButton>
                     <StyledBadge badgeContent={game.dislikes} color="warning"/>

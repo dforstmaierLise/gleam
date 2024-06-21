@@ -10,8 +10,8 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<Boolean> login(@RequestBody LoginDto credentials) {
 
-        if( credentials.username().isEmpty() ||
-            credentials.password().isEmpty() ) {
+        if (credentials.username().isEmpty() ||
+                credentials.password().isEmpty()) {
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
 

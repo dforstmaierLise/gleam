@@ -5,7 +5,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-interface PopupProps{
+interface PopupProps {
     onClose: () => void;
 }
 
@@ -39,10 +39,10 @@ const Popup: React.FC<PopupProps> = ({onClose}) => {
                             aria-label="toggle thumbs up/down"
                         >
                             <ToggleButton value="thumbs-up" aria-label="thumbs up">
-                                <ThumbUpIcon />
+                                <ThumbUpIcon/>
                             </ToggleButton>
                             <ToggleButton value="thumbs-down" aria-label="thumbs down">
-                                <ThumbDownIcon />
+                                <ThumbDownIcon/>
                             </ToggleButton>
                         </ToggleButtonGroup>
                     </Grid>

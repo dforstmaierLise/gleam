@@ -1,6 +1,7 @@
-.root{
+.root {
     --glow-intensity: 0.0
 }
+
 @keyframes pulsate {
     0% {
         box-shadow: 0 0 calc((var(--glow-intensity) * 20px)) rgba(255, 192, 0, calc((var(--glow-intensity) * 0.5)));
@@ -23,7 +24,7 @@
 }
 
 .gameCard:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
 }
 
