@@ -4,10 +4,14 @@ import com.gleam.backend.dto.GameDto;
 import com.gleam.backend.dto.ReviewDto;
 import com.gleam.backend.mapper.GameMapper;
 import com.gleam.backend.mapper.RatingMapper;
+import com.gleam.backend.model.Game;
 import com.gleam.backend.service.GameService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/games")
@@ -26,48 +30,58 @@ public class GameController {
     }
 
     @GetMapping("/getGame")
-    public GameDto getGame(@RequestParam(value="id") String id) {
-        var optionalGame = gameService.getGame(id);
-        return optionalGame.map(gameMapper::toDto).orElse(null);
+    public ResponseEntity<GameDto> getGame(@RequestParam(value="id") String id) {
+       return createReponseEntity( gameService.getGame(id) );
+    }
+
+    private ResponseEntity<GameDto> createReponseEntity(Optional<Game> optionalGame)
+    {
+        return optionalGame
+                .map(gameMapper::toDto)
+                .map(gameDto -> new ResponseEntity<>(gameDto, HttpStatus.OK ))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/getAllGames")
-    public List<GameDto> getAllGames() {
+    public ResponseEntity<List<GameDto>> getAllGames() {
         var games = gameService.getAllGames();
-        return gameMapper.toDtoList(games);
+        var gamesDto = gameMapper.toDtoList(games);
+        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
     }
 
     @GetMapping("/getGamesCount")
-    public long getGamesCount(){
-        return gameService.getGamesCount();
+    public ResponseEntity<Long> getGamesCount(){
+        var count = gameService.getGamesCount();
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
     @GetMapping("/getGamesWithPrefix")
-    public List<GameDto> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix) {
+    public ResponseEntity<List<GameDto>> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix) {
         var games = gameService.getGamesWithPrefix(prefix);
-        return gameMapper.toDtoList(games);
+        var gamesDto = gameMapper.toDtoList(games);
+        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
     }
 
     @GetMapping("/getGameWithPrefix")
-    public GameDto getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
-        var game = gameService.getGameWithPrefix(prefix);
-        return gameMapper.toDto(game);
+    public ResponseEntity<GameDto> getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
+        return createReponseEntity(gameService.getGameWithPrefix(prefix) );
     }
 
     @PostMapping("/addReview")
-    public void addReview(@RequestBody ReviewDto reviewDto) {
+    public ResponseEntity<Void> addReview(@RequestBody ReviewDto reviewDto) {
         var optionalGame = gameService.getGame(reviewDto.title());
         if( optionalGame.isEmpty() )
         {
-            return;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         var rating = ratingMapper.toEntity(reviewDto);
         gameService.addRating(optionalGame.get(), rating);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/addLike")
-    public GameDto addLike(@RequestParam(value = "id") String id) {
+    public ResponseEntity<GameDto> addLike(@RequestParam(value = "id") String id) {
         var game = gameService.getGame(id);
         if( game.isEmpty() )
         {
@@ -75,11 +89,11 @@ public class GameController {
         }
 
         gameService.addLike(game.get());
-        return gameMapper.toDto(game.get());
+        return createReponseEntity(game);
     }
 
     @PostMapping("/addDislike")
-    public GameDto addDislike(@RequestParam(value = "id") String id) {
+    public ResponseEntity<GameDto> addDislike(@RequestParam(value = "id") String id) {
         var game = gameService.getGame(id);
         if( game.isEmpty() )
         {
@@ -87,6 +101,6 @@ public class GameController {
         }
 
         gameService.addDislike(game.get());
-        return gameMapper.toDto(game.get());
+        return createReponseEntity(game);
     }
 }

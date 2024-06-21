@@ -6,7 +6,6 @@ import com.gleam.backend.repository.GameRepository;
 import com.gleam.backend.repository.RatingRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class GameService {
     }
 
     public long getGamesCount(){
-        return getAllGames().size();
+        return gameRepository.count();
     }
 
     public List<Game> getGamesWithPrefix(String prefix)
@@ -39,11 +38,10 @@ public class GameService {
                 .collect(Collectors.toList());
     }
 
-    public Game getGameWithPrefix( String prefix)
+    public Optional<Game> getGameWithPrefix(String prefix)
     {
         return getGamesWithPrefix(prefix).stream()
-                .min(Comparator.comparing(Game::getTitle, String.CASE_INSENSITIVE_ORDER))
-                .orElse(null);
+                .min(Comparator.comparing(Game::getTitle, String.CASE_INSENSITIVE_ORDER));
     }
 
     public Optional<Game> getGame(String id) {
@@ -56,17 +54,6 @@ public class GameService {
         ratingRepository.save(review);
         game.getReviewIds().add(review.getId());
         gameRepository.save(game);
-    }
-
-
-    public List<Review> getReviews(Game game)
-    {
-        var ratingIds = game.getReviewIds();
-        if (!ratingIds.isEmpty()) {
-            return ratingRepository.findAllById(ratingIds);
-        }
-
-        return new ArrayList<>();
     }
 
     public void addLike(Game game)
