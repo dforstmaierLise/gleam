@@ -1,15 +1,15 @@
 import {getAllGames} from "../services/api.ts";
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import GameDto from "../data/GameDto.ts";
+import { FunctionComponent, useEffect, useState } from 'react';
 import GameEntry from "./GameEntry.tsx";
+import {Game} from "../data/Game.ts";
+import './GameTable.css';
 
 interface PopupProps{
-    onOpen: () => void;
 }
 
-const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
+const GameTable: FunctionComponent<PopupProps> = () => {
 
-    const [allGames, setAllGames ] = useState<GameDto[]>();
+    const [allGames, setAllGames ] = useState<Game[]>();
 
     useEffect(() => {
         refreshGames();
@@ -17,18 +17,12 @@ const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
 
     const refreshGames = async() => {
         try {
-            const data:GameDto[] = await getAllGames();
+            const data:Game[] = await getAllGames();
             setAllGames(data);
         } catch (error){
             console.log(error);
         }
     }
-
-    // refreshGames();
-
-    const handleOpen = () => {
-        onOpen();
-    };
 
     const handleLike = () => {
         refreshGames();
@@ -37,10 +31,10 @@ const GameTable: FunctionComponent<PopupProps> = ({onOpen}) => {
     return (
         <div>
             <div className="listGames">
-                <h1>Amazing games</h1>
+                <h1>Glamorous games</h1>
                 {allGames?.map((game) => (
                     <article>
-                        <GameEntry key={game.title} game={game} onOpen={handleOpen} onLike={handleLike} />
+                        <GameEntry key={game.id} game={game} onLike={handleLike} />
                     </article>
                 ))}
             </div>

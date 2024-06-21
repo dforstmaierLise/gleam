@@ -1,4 +1,4 @@
-export default interface ReviewDto {
+export type Review = {
     title: string;
     comment: string;
 }

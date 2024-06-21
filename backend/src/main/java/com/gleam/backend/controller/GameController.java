@@ -4,73 +4,103 @@ import com.gleam.backend.dto.GameDto;
 import com.gleam.backend.dto.ReviewDto;
 import com.gleam.backend.mapper.GameMapper;
 import com.gleam.backend.mapper.RatingMapper;
+import com.gleam.backend.model.Game;
 import com.gleam.backend.service.GameService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
 
-    @Autowired
-    private GameService gameService;
+    private final GameService gameService;
 
-    @Autowired
-    private GameMapper gameMapper;
+    private final GameMapper gameMapper;
 
-    @Autowired
-    private RatingMapper ratingMapper;
+    private final RatingMapper ratingMapper;
+
+    public GameController(GameService gameService, GameMapper gameMapper, RatingMapper ratingMapper) {
+        this.gameService = gameService;
+        this.gameMapper = gameMapper;
+        this.ratingMapper = ratingMapper;
+    }
 
     @GetMapping("/getGame")
-    public GameDto getGame(@RequestParam(value="title") String title) {
-        var game = gameService.getGame(title);
-        return gameMapper.toDto(game);
+    public ResponseEntity<GameDto> getGame(@RequestParam(value="id") String id) {
+       return createReponseEntity( gameService.getGame(id) );
+    }
+
+    private ResponseEntity<GameDto> createReponseEntity(Optional<Game> optionalGame)
+    {
+        return optionalGame
+                .map(gameMapper::toDto)
+                .map(gameDto -> new ResponseEntity<>(gameDto, HttpStatus.OK ))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/getAllGames")
-    public List<GameDto> getAllGames() {
+    public ResponseEntity<List<GameDto>> getAllGames() {
         var games = gameService.getAllGames();
-        return gameMapper.toDtoList(games);
+        var gamesDto = gameMapper.toDtoList(games);
+        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
     }
 
     @GetMapping("/getGamesCount")
-    public long getGamesCount(){
-        return gameService.getGamesCount();
+    public ResponseEntity<Long> getGamesCount(){
+        var count = gameService.getGamesCount();
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
     @GetMapping("/getGamesWithPrefix")
-    public List<GameDto> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix) {
+    public ResponseEntity<List<GameDto>> getGamesWithPrefix(@RequestParam(value = "prefix") String prefix) {
         var games = gameService.getGamesWithPrefix(prefix);
-        return gameMapper.toDtoList(games);
+        var gamesDto = gameMapper.toDtoList(games);
+        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
     }
 
     @GetMapping("/getGameWithPrefix")
-    public GameDto getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
-        var game = gameService.getGameWithPrefix(prefix);
-        return gameMapper.toDto(game);
+    public ResponseEntity<GameDto> getGameWithPrefix(@RequestParam(value = "prefix") String prefix) {
+        return createReponseEntity(gameService.getGameWithPrefix(prefix) );
     }
 
     @PostMapping("/addReview")
-    public void addReview(@RequestBody ReviewDto reviewDto) {
-        var game = gameService.getGame(reviewDto.title());
-        if (game != null) {
-            var rating = ratingMapper.toEntity(reviewDto);
-            gameService.addRating(game, rating);
+    public ResponseEntity<Void> addReview(@RequestBody ReviewDto reviewDto) {
+        var optionalGame = gameService.getGame(reviewDto.title());
+        if( optionalGame.isEmpty() )
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        var rating = ratingMapper.toEntity(reviewDto);
+        gameService.addRating(optionalGame.get(), rating);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/addLike")
-    public GameDto addLike(@RequestParam(value = "title") String title, @RequestParam(value = "like") int like) {
-        var game = gameService.getGame(title);
-        gameService.addLike(game, like);
-        return gameMapper.toDto(game);
+    public ResponseEntity<GameDto> addLike(@RequestParam(value = "id") String id) {
+        var game = gameService.getGame(id);
+        if( game.isEmpty() )
+        {
+            return null;
+        }
+
+        gameService.addLike(game.get());
+        return createReponseEntity(game);
     }
 
-    @GetMapping("/displayGameDetails")
-    public void displayGameDetails(@RequestParam(value = "title") String title) {
-        var game = gameService.getGame(title);
-        gameService.displayGameDetails(game);
+    @PostMapping("/addDislike")
+    public ResponseEntity<GameDto> addDislike(@RequestParam(value = "id") String id) {
+        var game = gameService.getGame(id);
+        if( game.isEmpty() )
+        {
+            return null;
+        }
+
+        gameService.addDislike(game.get());
+        return createReponseEntity(game);
     }
 }
