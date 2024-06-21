@@ -15,12 +15,7 @@
 
 
 .gameCard {
-    /* Add shadows to create the "card" effect */
-    /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);*/
-    /*box-shadow: 0 0 200px rgba(255,192,0, var(--glow-intensity));*/
     border-radius: 10px;
-    /*background-color: #ffffff*/
-    /*transition: 0.3s;*/
     background-color: #4a4a4a;
     display: flex;
     animation: pulsate 4s infinite;
@@ -35,13 +30,10 @@
 
 .containerDetails {
     padding: 2px 16px;
-    /*align-self: center;*/
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     width: 450px;
-    /*background-image: url('background.jpg');*/
-    /*background-size: contain;*/
 }
 
 .detailItem {
