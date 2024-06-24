@@ -7,6 +7,23 @@ import {UserDto} from "../data/UserDto.ts";
 const Header: React.FC = () => {
     const [inputValue, setInputValue] = useState<string>('');
     const [user, setUser] = useState<UserDto | null>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    const validateUsername = (name: string): boolean => {
+        const usernamePattern = /^[A-Za-z0-9]+$/; // Nur Buchstaben und Zahlen erlaubt
+        if (name.length < 3 || name.length > 20) {
+            setErrorMsg('Der Benutzername muss zwischen 3 und 20 Zeichen lang sein.');
+            return false;
+        }
+        if (!usernamePattern.test(name)) {
+            setErrorMsg('Der Benutzername darf nur Buchstaben und Zahlen enthalten.');
+            return false;
+        }
+
+        setErrorMsg("");
+        return true;
+    };
+
 
     const handleLogin = async () => {
 
@@ -18,6 +35,10 @@ const Header: React.FC = () => {
 
         // Fake login.
         try {
+            if (!validateUsername(inputValue)) {
+                return;
+            }
+
             const request: RegisterUserRequest = {
                 username: inputValue,
                 password: "Hardcoded@Password123!"
@@ -30,9 +51,11 @@ const Header: React.FC = () => {
         }
     }
 
+
     return (
         <header className="header">
             <div className="header-content">
+                <p>{errorMsg}</p>
                 {user ? (
                     <p>Welcome, {user.username}!</p>
                 ) : (
