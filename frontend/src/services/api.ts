@@ -1,5 +1,7 @@
 import axios from 'axios';
-import Game from '../data/Game.ts';
+import {Game} from '../data/Game.ts';
+import {RegisterUserRequest} from "../data/RegisterUserRequest.ts";
+import {UserDto} from "../data/UserDto.ts";
 
 const API_URL = 'http://localhost:8080';
 
@@ -15,5 +17,10 @@ export const addLike = async (id: string) => {
 
 export const addDislike = async (id: string) => {
     const response = await axios.post<Game>(`${API_URL}/api/games/addDislike?id=${id}`);
+    return response.data;
+}
+
+export const getOrCreateUser = async (request: RegisterUserRequest) => {
+    const response = await axios.post<UserDto>(`${API_URL}/api/users/getOrCreateUser`, request);
     return response.data;
 }
