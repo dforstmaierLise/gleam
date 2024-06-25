@@ -1,4 +1,4 @@
-package com.gleam.backend.user.ui.dto;
+package com.gleam.backend.common.dto;
 
 public record RegisterUserRequest(
         String username,

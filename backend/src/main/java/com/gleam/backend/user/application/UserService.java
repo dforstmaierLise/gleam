@@ -1,8 +1,8 @@
 package com.gleam.backend.user.application;
 
+import com.gleam.backend.common.dto.RegisterUserRequest;
 import com.gleam.backend.user.domain.User;
 import com.gleam.backend.user.infrastructure.UserRepository;
-import com.gleam.backend.user.ui.dto.RegisterUserRequest;
 import org.springframework.stereotype.Service;
 
 @Service
