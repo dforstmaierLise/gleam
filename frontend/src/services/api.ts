@@ -21,6 +21,6 @@ export const addDislike = async (id: string) => {
 }
 
 export const getOrCreateUser = async (request: RegisterUserRequest) => {
-    const response = await axios.post<UserDto>(`${API_URL}/api/users/getOrCreateUser`, request);
+    const response = await axios.post<UserDto>(`${API_URL}/api/getOrCreateUser`, request);
     return response.data;
 }
