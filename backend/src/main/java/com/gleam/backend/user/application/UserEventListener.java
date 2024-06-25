@@ -19,6 +19,6 @@ public class UserEventListener {
     public void handleGetOrCreateUserEvent(GetOrCreateUserEvent event) {
         var user = userService.getOrCreateUser(event.getRequest());
         var userDto = userMapper.toDto(user);
-        event.getUserFuture().complete(userDto);
+        event.getFuture().complete(userDto);
     }
 }

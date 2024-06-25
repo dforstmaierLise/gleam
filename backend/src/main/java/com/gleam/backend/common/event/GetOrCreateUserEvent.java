@@ -7,12 +7,12 @@ import lombok.Data;
 import java.util.concurrent.CompletableFuture;
 
 @Data
-public class GetOrCreateUserEvent {
+public class GetOrCreateUserEvent implements Event {
     private RegisterUserRequest request;
-    private CompletableFuture<UserDto> userFuture;
+    private CompletableFuture<UserDto> future;
 
-    public GetOrCreateUserEvent(RegisterUserRequest request, CompletableFuture<UserDto> userFuture) {
+    public GetOrCreateUserEvent(RegisterUserRequest request, CompletableFuture<UserDto> future) {
         this.request = request;
-        this.userFuture = userFuture;
+        this.future = future;
     }
 }
