@@ -1,7 +1,7 @@
-package com.gleam.backend.mapper;
+package com.gleam.backend.game.mapper;
 
-import com.gleam.backend.dto.GameDto;
-import com.gleam.backend.model.Game;
+import com.gleam.backend.common.dto.GameDto;
+import com.gleam.backend.game.domain.Game;
 import org.mapstruct.Mapper;
 
 import java.util.List;

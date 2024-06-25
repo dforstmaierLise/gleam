@@ -1,4 +1,4 @@
-package com.gleam.backend.dto;
+package com.gleam.backend.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;

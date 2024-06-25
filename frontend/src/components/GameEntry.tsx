@@ -78,7 +78,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
                     <IconButton value="thumbs-down" aria-label="thumbs down" onClick={handleAddDislike}>
                         <ThumbDownIcon/>
                     </IconButton>
-                    <StyledBadge badgeContent={game.dislikes} color="warning"/>
+                    <StyledBadge badgeContent={game.dislikes} color="warning" overlap="rectangular" max={9999}/>
                 </div>
             </div>
         </div>

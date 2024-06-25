@@ -1,4 +1,4 @@
-package com.gleam.backend.model;
+package com.gleam.backend.game.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
