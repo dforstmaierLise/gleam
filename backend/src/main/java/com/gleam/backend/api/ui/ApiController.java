@@ -3,6 +3,8 @@ package com.gleam.backend.api.ui;
 import com.gleam.backend.common.dto.GameDto;
 import com.gleam.backend.common.dto.RegisterUserRequest;
 import com.gleam.backend.common.dto.UserDto;
+import com.gleam.backend.common.event.AddDislikeEvent;
+import com.gleam.backend.common.event.AddLikeEvent;
 import com.gleam.backend.common.event.GetAllGamesEvent;
 import com.gleam.backend.common.event.GetOrCreateUserEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,7 +22,6 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("/api")
 public class ApiController {
     private final ApplicationEventPublisher eventPublisher;
-    private final long timeout = 5;
 
     public ApiController(ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
@@ -28,32 +29,41 @@ public class ApiController {
 
     @PostMapping("/getOrCreateUser")
     public ResponseEntity<UserDto> getOrCreateUser(@RequestBody RegisterUserRequest requestDto) {
-        var userFuture = new CompletableFuture<UserDto>();
-        var event = new GetOrCreateUserEvent(requestDto, userFuture);
-        eventPublisher.publishEvent(event);
-
-        try {
-            var userDto = userFuture.get(timeout, TimeUnit.SECONDS);
-            return new ResponseEntity<>(userDto, HttpStatus.OK);
-        } catch (TimeoutException | InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Request timed out");
-        }
+        var future = new CompletableFuture<UserDto>();
+        var event = new GetOrCreateUserEvent(requestDto, future);
+        return publishAndCreateResponse(event, future);
     }
 
     @GetMapping("/getAllGames")
     public ResponseEntity<List<GameDto>> getAllGames() {
         var future = new CompletableFuture<List<GameDto>>();
         var event = new GetAllGamesEvent(future);
+        return publishAndCreateResponse(event, future);
+    }
+
+    @PostMapping("/addLike")
+    public ResponseEntity<GameDto> addLike(@RequestParam(value = "id") String id) {
+        var future = new CompletableFuture<GameDto>();
+        var event = new AddLikeEvent(id, future);
+        return publishAndCreateResponse(event, future);
+    }
+
+    @PostMapping("/addDislike")
+    public ResponseEntity<GameDto> addDislike(@RequestParam(value = "id") String id) {
+        var future = new CompletableFuture<GameDto>();
+        var event = new AddDislikeEvent(id, future);
+        return publishAndCreateResponse(event, future);
+    }
+
+    private <T> ResponseEntity<T> publishAndCreateResponse(Object event, CompletableFuture<T> future) {
+
         eventPublisher.publishEvent(event);
 
         try {
-            var dto = future.get(timeout, TimeUnit.SECONDS);
+            T dto = future.get(5, TimeUnit.SECONDS);
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             throw new RuntimeException("Request timed out");
         }
-//        var games = gameService.getAllGames();
-//        var gamesDto = gameMapper.toDtoList(games);
-//        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
     }
 }

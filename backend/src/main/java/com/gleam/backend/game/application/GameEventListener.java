@@ -1,5 +1,7 @@
 package com.gleam.backend.game.application;
 
+import com.gleam.backend.common.event.AddDislikeEvent;
+import com.gleam.backend.common.event.AddLikeEvent;
 import com.gleam.backend.common.event.GetAllGamesEvent;
 import com.gleam.backend.game.mapper.GameMapper;
 import org.springframework.context.event.EventListener;
@@ -20,5 +22,31 @@ public class GameEventListener {
         var games = gameService.getAllGames();
         var gamesDto = gameMapper.toDtoList(games);
         event.getFuture().complete(gamesDto);
+    }
+
+    @EventListener
+    public void handleAddLikeEvent(AddLikeEvent event) {
+        var gameOptional = gameService.getGame(event.getGameId());
+        if (gameOptional.isEmpty()) {
+            return;
+        }
+
+        gameService.addLike(gameOptional.get());
+
+        var gameDto = gameMapper.toDto(gameOptional.get());
+        event.getFuture().complete(gameDto);
+    }
+
+    @EventListener
+    public void handleAddDislikeEvent(AddDislikeEvent event) {
+        var gameOptional = gameService.getGame(event.getGameId());
+        if (gameOptional.isEmpty()) {
+            return;
+        }
+
+        gameService.addDislike(gameOptional.get());
+
+        var gameDto = gameMapper.toDto(gameOptional.get());
+        event.getFuture().complete(gameDto);
     }
 }
