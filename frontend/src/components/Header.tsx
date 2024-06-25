@@ -10,17 +10,20 @@ const Header: React.FC = () => {
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     const validateUsername = (name: string): boolean => {
-        const usernamePattern = /^[A-Za-z0-9]+$/; // Nur Buchstaben und Zahlen erlaubt
+        const allowLettersAndNumbers = (): RegExp => {
+            return /^[A-Za-z0-9]+$/;
+        };
+
         if (name.length < 3 || name.length > 20) {
             setErrorMsg('Der Benutzername muss zwischen 3 und 20 Zeichen lang sein.');
             return false;
         }
-        if (!usernamePattern.test(name)) {
+        if (!allowLettersAndNumbers().test(name)) {
             setErrorMsg('Der Benutzername darf nur Buchstaben und Zahlen enthalten.');
             return false;
         }
 
-        setErrorMsg("");
+        setErrorMsg(null);
         return true;
     };
 

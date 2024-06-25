@@ -15,11 +15,10 @@ public class UserService {
 
     public User getOrCreateUser(RegisterUserRequest requestDto) {
         var optionalUser = userRepository.findByUsername(requestDto.username());
-        if (optionalUser.isEmpty()) {
-            var user = new User(requestDto.username(), "fakeHashPassword");
-            return userRepository.save(user);
-        } else {
-            return optionalUser.get();
-        }
+        return optionalUser.orElse(createUser(requestDto.username()));
+    }
+
+    private User createUser(String username) {
+        return userRepository.save(new User(username, "fakeHashPassword"));
     }
 }
