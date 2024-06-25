@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.concurrent.CompletableFuture;
 
 @Data
-public class AddDislikeEvent {
+public class AddDislikeEvent implements Event {
     private String gameId;
     private CompletableFuture<GameDto> future;
 

@@ -3,10 +3,7 @@ package com.gleam.backend.api.ui;
 import com.gleam.backend.common.dto.GameDto;
 import com.gleam.backend.common.dto.RegisterUserRequest;
 import com.gleam.backend.common.dto.UserDto;
-import com.gleam.backend.common.event.AddDislikeEvent;
-import com.gleam.backend.common.event.AddLikeEvent;
-import com.gleam.backend.common.event.GetAllGamesEvent;
-import com.gleam.backend.common.event.GetOrCreateUserEvent;
+import com.gleam.backend.common.event.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +52,7 @@ public class ApiController {
         return publishAndCreateResponse(event, future);
     }
 
-    private <T> ResponseEntity<T> publishAndCreateResponse(Object event, CompletableFuture<T> future) {
+    private <T> ResponseEntity<T> publishAndCreateResponse(Event event, CompletableFuture<T> future) {
 
         eventPublisher.publishEvent(event);
 

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Data
-public class GetAllGamesEvent {
+public class GetAllGamesEvent implements Event {
     private CompletableFuture<List<GameDto>> future;
 
     public GetAllGamesEvent(final CompletableFuture<List<GameDto>> future) {
