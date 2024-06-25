@@ -1,9 +1,9 @@
 package com.gleam.backend.game.ui;
 
+import com.gleam.backend.common.dto.GameDto;
 import com.gleam.backend.game.application.GameService;
 import com.gleam.backend.game.domain.Game;
 import com.gleam.backend.game.mapper.GameMapper;
-import com.gleam.backend.game.ui.dto.GameDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,12 +36,12 @@ public class GameController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/getAllGames")
-    public ResponseEntity<List<GameDto>> getAllGames() {
-        var games = gameService.getAllGames();
-        var gamesDto = gameMapper.toDtoList(games);
-        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
-    }
+//    @GetMapping("/getAllGames")
+//    public ResponseEntity<List<GameDto>> getAllGames() {
+//        var games = gameService.getAllGames();
+//        var gamesDto = gameMapper.toDtoList(games);
+//        return new ResponseEntity<>(gamesDto, HttpStatus.OK);
+//    }
 
     @GetMapping("/getGamesCount")
     public ResponseEntity<Long> getGamesCount() {

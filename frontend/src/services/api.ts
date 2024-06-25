@@ -6,7 +6,7 @@ import {UserDto} from "../data/UserDto.ts";
 const API_URL = 'http://localhost:8080';
 
 export const getAllGames = async () => {
-    const response = await axios.get<Game[]>(`${API_URL}/api/games/getAllGames`);
+    const response = await axios.get<Game[]>(`${API_URL}/api/getAllGames`);
     return response.data;
 }
 
