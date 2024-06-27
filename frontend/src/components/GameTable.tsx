@@ -31,7 +31,6 @@ const GameTable: FunctionComponent<PopupProps> = () => {
     return (
         <div>
             <div className="listGames">
-                <h1>Glamorous games</h1>
                 {allGames?.map((game) => (
                     <article>
                         <GameEntry key={game.id} game={game} onLike={handleLike}/>

@@ -1,5 +1,11 @@
-.App {
+.app {
     background-image: url('../../public/background.jpg');
     background-size: auto;
     background-position: top;
+    display: flex;
+    justify-content: center;
+}
+
+.app-container {
+    max-width: 1200px;
 }
