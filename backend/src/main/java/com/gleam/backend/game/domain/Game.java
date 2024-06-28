@@ -19,4 +19,5 @@ public class Game {
     private List<String> reviewIds = new ArrayList<>();
     private int likes;
     private int dislikes;
+    private List<String> platforms = new ArrayList<>();
 }

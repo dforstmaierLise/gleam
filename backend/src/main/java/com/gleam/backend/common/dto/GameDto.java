@@ -13,5 +13,6 @@ public record GameDto(
         String developer,
         List<String> reviewIds,
         int likes,
-        int dislikes) {
+        int dislikes,
+        List<String> platforms) {
 }

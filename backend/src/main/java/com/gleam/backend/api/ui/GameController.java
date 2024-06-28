@@ -4,6 +4,7 @@ import com.gleam.backend.common.dto.GameDto;
 import com.gleam.backend.common.event.AddDislikeEvent;
 import com.gleam.backend.common.event.AddLikeEvent;
 import com.gleam.backend.common.event.GetAllGamesEvent;
+import com.gleam.backend.common.event.GetGamesByPlatformEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,13 @@ public class GameController extends ApiController {
     public ResponseEntity<List<GameDto>> getAllGames() {
         var future = new CompletableFuture<List<GameDto>>();
         var event = new GetAllGamesEvent(future);
+        return publishAndCreateResponse(event, future);
+    }
+
+    @PostMapping("/getGamesByPlatform")
+    public ResponseEntity<List<GameDto>> getGamesByPlatform(@RequestBody String[] platforms) {
+        var future = new CompletableFuture<List<GameDto>>();
+        var event = new GetGamesByPlatformEvent(platforms, future);
         return publishAndCreateResponse(event, future);
     }
 

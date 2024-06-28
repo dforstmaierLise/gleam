@@ -4,7 +4,6 @@ import com.gleam.backend.game.domain.Game;
 import com.gleam.backend.game.infrastructure.GameRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,21 +21,6 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public long getGamesCount() {
-        return gameRepository.count();
-    }
-
-    public List<Game> getGamesWithPrefix(String prefix) {
-        return getAllGames().stream()
-                .filter(game -> game.getTitle().toLowerCase().startsWith(prefix.toLowerCase()))
-                .collect(Collectors.toList());
-    }
-
-    public Optional<Game> getGameWithPrefix(String prefix) {
-        return getGamesWithPrefix(prefix).stream()
-                .min(Comparator.comparing(Game::getTitle, String.CASE_INSENSITIVE_ORDER));
-    }
-
     public Optional<Game> getGame(String id) {
         return getAllGames().stream()
                 .filter(game -> game.getId().equals(id))
@@ -51,5 +35,11 @@ public class GameService {
     public void addDislike(Game game) {
         game.setDislikes(game.getDislikes() + 1);
         gameRepository.save(game);
+    }
+
+    public List<Game> getGamesByPlatform(List<String> platforms) {
+        return gameRepository.findAll().stream()
+                .filter(game -> game.getPlatforms().stream().anyMatch(platforms::contains))
+                .collect(Collectors.toList());
     }
 }
