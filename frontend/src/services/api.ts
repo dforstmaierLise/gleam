@@ -10,6 +10,11 @@ export const getAllGames = async () => {
     return response.data;
 }
 
+export const getAllGamesByPlatforms = async (platforms: string[]) => {
+    const response = await axios.post<Game[]>(`${API_URL}/api/getGamesByPlatform`, platforms);
+    return response.data;
+}
+
 export const addLike = async (id: string) => {
     const response = await axios.post<Game>(`${API_URL}/api/addLike?id=${id}`);
     return response.data;

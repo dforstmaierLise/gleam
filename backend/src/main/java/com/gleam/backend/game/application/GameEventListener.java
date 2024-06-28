@@ -3,9 +3,12 @@ package com.gleam.backend.game.application;
 import com.gleam.backend.common.event.AddDislikeEvent;
 import com.gleam.backend.common.event.AddLikeEvent;
 import com.gleam.backend.common.event.GetAllGamesEvent;
+import com.gleam.backend.common.event.GetGamesByPlatformEvent;
 import com.gleam.backend.game.mapper.GameMapper;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 @Component
 public class GameEventListener {
@@ -48,5 +51,12 @@ public class GameEventListener {
 
         var gameDto = gameMapper.toDto(gameOptional.get());
         event.getFuture().complete(gameDto);
+    }
+
+    @EventListener
+    public void handleGetGamesByPlatformEvent(GetGamesByPlatformEvent event) {
+        var games = gameService.getGamesByPlatform(Arrays.stream(event.getPlatforms()).toList());
+        var gamesDto = gameMapper.toDtoList(games);
+        event.getFuture().complete(gamesDto);
     }
 }

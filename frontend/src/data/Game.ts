@@ -6,4 +6,5 @@ export type Game = {
     reviewIds: string[];
     likes: number;
     dislikes: number;
+    platforms: string[];
 }
