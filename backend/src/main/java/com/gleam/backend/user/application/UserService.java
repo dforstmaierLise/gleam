@@ -15,7 +15,7 @@ public class UserService {
 
     public User getOrCreateUser(RegisterUserRequest requestDto) {
         var optionalUser = userRepository.findByUsername(requestDto.username());
-        return optionalUser.orElse(createUser(requestDto.username()));
+        return optionalUser.orElseGet(() -> createUser(requestDto.username()));
     }
 
     private User createUser(String username) {
