@@ -8,7 +8,6 @@ import {Badge, BadgeProps, IconButton, styled} from "@mui/material";
 
 interface GameEntryProps {
     game: Game;
-    onOpen: () => void;
     onLike: () => void;
 }
 
@@ -69,6 +68,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
                     <p className="detailItem">Glam score: <b>{(glamFactor * 100).toFixed(0)}</b></p>
                     <p className="detailItem">Developer: {game.developer}</p>
                     <p className="detailItem">Release-Date: {game.releaseDate}</p>
+                    <p className="detailItem">Platforms: {game.platforms?.join(', ')}</p>
                 </div>
                 <div className="detailItem buttonList">
                     <IconButton value="thumbs-up" aria-label="thumbs up" onClick={handleAddLike}>
