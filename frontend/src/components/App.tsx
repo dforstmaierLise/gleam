@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import Popup from "./PopupRateGame.tsx";
-import GameTable from "./GameTable.tsx";
 import './App.css';
 import Header from "./Header.tsx";
+import Navigation from "./Navigation.tsx";
+import MainContent from "./MainContent.tsx";
 
 const App: React.FC = () => {
     const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
@@ -12,9 +13,12 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="App">
-            <Header/>
-            <GameTable/>
+        <div className="app">
+            <div className="app-container">
+                <Header/>
+                <Navigation/>
+                <MainContent/>
+            </div>
             {isPopupVisible && <Popup onClose={handleClosePopup}/>}
         </div>
     );
