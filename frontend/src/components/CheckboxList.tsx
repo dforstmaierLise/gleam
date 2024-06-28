@@ -10,12 +10,11 @@ const CheckboxList: React.FC<CheckboxListProps> = ({values, onChange}) => {
     const [selectedValues, setSelectedValues] = useState<string[]>(['PC']);
 
     const handleCheckboxChange = (value: string) => {
-        let updatedValues = [...selectedValues];
-        if (updatedValues.includes(value)) {
-            updatedValues = updatedValues.filter(v => v !== value);
-        } else {
-            updatedValues.push(value);
-        }
+
+        const updatedValues = selectedValues.includes(value)
+            ? selectedValues.filter(v => v !== value)
+            : [...selectedValues, value];
+
         setSelectedValues(updatedValues);
         onChange(updatedValues);
     };
