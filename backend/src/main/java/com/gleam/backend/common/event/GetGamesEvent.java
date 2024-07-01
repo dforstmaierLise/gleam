@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Data
-public class GetGamesByPlatformEvent implements Event {
+public class GetGamesEvent implements Event {
     private String[] platforms;
+    private String prefix;
     private CompletableFuture<List<GameDto>> future;
 
-    public GetGamesByPlatformEvent(String[] platforms, final CompletableFuture<List<GameDto>> future) {
+    public GetGamesEvent(String[] platforms, String prefix, final CompletableFuture<List<GameDto>> future) {
         this.platforms = platforms;
+        this.prefix = prefix;
         this.future = future;
     }
 }

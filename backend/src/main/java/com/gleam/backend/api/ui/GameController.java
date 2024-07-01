@@ -1,10 +1,8 @@
 package com.gleam.backend.api.ui;
 
 import com.gleam.backend.common.dto.GameDto;
-import com.gleam.backend.common.event.AddDislikeEvent;
-import com.gleam.backend.common.event.AddLikeEvent;
-import com.gleam.backend.common.event.GetAllGamesEvent;
-import com.gleam.backend.common.event.GetGamesByPlatformEvent;
+import com.gleam.backend.common.dto.GetGamesRequest;
+import com.gleam.backend.common.event.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +24,17 @@ public class GameController extends ApiController {
         return publishAndCreateResponse(event, future);
     }
 
-    @PostMapping("/getGamesByPlatform")
-    public ResponseEntity<List<GameDto>> getGamesByPlatform(@RequestBody String[] platforms) {
+    @PostMapping("/getGames")
+    public ResponseEntity<List<GameDto>> getGames(@RequestBody GetGamesRequest requestDto) {
         var future = new CompletableFuture<List<GameDto>>();
-        var event = new GetGamesByPlatformEvent(platforms, future);
+        var event = new GetGamesEvent(requestDto.platforms(), requestDto.prefix(), future);
+        return publishAndCreateResponse(event, future);
+    }
+
+    @PostMapping("/getGameTitlesWithPrefix")
+    public ResponseEntity<String[]> getGameTitlesWithPrefix(@RequestBody GetGamesRequest requestDto) {
+        var future = new CompletableFuture<String[]>();
+        var event = new GetGameTitlesByPrefixEvent(requestDto.platforms(), requestDto.prefix(), future);
         return publishAndCreateResponse(event, future);
     }
 

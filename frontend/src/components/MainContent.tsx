@@ -2,28 +2,34 @@ import React, {useState} from 'react';
 import './MainContent.css';
 import GameTable from "./GameTable.tsx";
 import CheckboxList from "./CheckboxList.tsx";
+import SearchByName from "./SearchByName.tsx";
 
 const MainContent: React.FC = () => {
 
-    const [selectedValues, setSelectedValues] = useState<string[]>(["PC"]);
+    const [platformFilter, setPlatformFilter] = useState<string[]>(["PC"]);
+    const [prefixFilter, setPrefixFilter] = useState<string>("");
 
     const handleCheckboxListChange = (values: string[]) => {
-        setSelectedValues(values);
-        // console.log(selectedValues);
+        setPlatformFilter(values);
     };
+
+    const handleSearchByNameChange = (selectedPrefix: string) => {
+        setPrefixFilter(selectedPrefix);
+    };
+
 
 
     return (
         <div className="container">
             <div className="sidebar">
                 <h2>Filter</h2>
-                <p>Here you will find some check boxes to select some platforms to filter.</p>
+                <SearchByName platformFilter={platformFilter} onPrefixChange={handleSearchByNameChange}/>
                 <CheckboxList
                     values={['PC', 'PS5', 'Xbox', 'Switch']}
                     onChange={handleCheckboxListChange}/>
             </div>
             <div className="main-content">
-                <GameTable platformFilter={selectedValues}/>
+                <GameTable platformFilter={platformFilter} prefixFilter={prefixFilter}/>
             </div>
         </div>
     );
