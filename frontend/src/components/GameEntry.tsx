@@ -4,7 +4,9 @@ import {addDislike, addLike} from "../services/api.ts";
 import {Game} from "../data/Game.ts";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import {Badge, BadgeProps, IconButton, styled} from "@mui/material";
+import {Badge, BadgeProps, Button, IconButton, styled} from "@mui/material";
+import {useDialog} from "./dialogs/DialogContext.tsx";
+import {GameDetailsDialogProps} from "./dialogs/GameDetailsDialog.tsx";
 
 interface GameEntryProps {
     game: Game;
@@ -22,6 +24,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
         return null;
     }
 
+
     const transformGameName = (gameName: string): string => {
         return gameName.toLowerCase().replace(/ /g, '_');
     };
@@ -31,6 +34,10 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
         const factor = likes / sum;
         // Return the exponential value to add more visual emphasis on very good games
         return factor * factor;
+    }
+
+    const getGlamString = (glamFactor: number): string => {
+        return (glamFactor * 100).toFixed(0);
     }
 
     const handleAddLike = async () => {
@@ -54,6 +61,22 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
     const transformedName = transformGameName(game.title);
     const logoUrl = `/images/logo-${transformedName}.webp`;
     const glamFactor = calcGlamFactor(game.likes, game.dislikes);
+    const glamString = getGlamString(glamFactor);
+
+    const {openDialog} = useDialog();
+
+    const handleDetailsClick = () => {
+        const gameDetailsProps: GameDetailsDialogProps = {
+            title: game.title,
+            developerName: game.developer,
+            releaseDate: game.releaseDate,
+            score: glamString,
+            youtubeTrailer: "https://www.youtube.com/embed/JUCMqEI9AWg?si=Pr8AkS2SV-MCvq3Q",
+            description: "Das von über 50 Magazinen zum Spiel des Jahres gekürte Spiel-Debüt von Valve ist eine Kombination aus Action und Adventure mit preisgekrönter Technologie, die eine beängstigende realistische Welt entstehen lässt, in der die Spieler Köpfchen brauchen, um zu überleben."
+        }
+
+        openDialog('gameDetails', gameDetailsProps);
+    };
 
     return (
         <div
@@ -65,7 +88,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
             <div className="containerDetails">
                 <h4 className="detailItem"><b>{game.title}</b></h4>
                 <div className="detailItem">
-                    <p className="detailItem">Glam score: <b>{(glamFactor * 100).toFixed(0)}</b></p>
+                    <p className="detailItem">Glam score: <b>{glamString}</b></p>
                     <p className="detailItem">Developer: {game.developer}</p>
                     <p className="detailItem">Release-Date: {game.releaseDate}</p>
                     <p className="detailItem">Platforms: {game.platforms?.join(', ')}</p>
@@ -79,6 +102,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
                         <ThumbDownIcon/>
                     </IconButton>
                     <StyledBadge badgeContent={game.dislikes} color="warning" overlap="rectangular" max={9999}/>
+                    <Button onClick={handleDetailsClick}>Details</Button>
                 </div>
             </div>
         </div>
