@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@mui/material';
-import {useDialog} from './DialogContext';
+import {useDialog} from './useDialog.ts';
 
 export interface InfoDialogProps {
     title: string;
@@ -11,7 +11,7 @@ const InfoDialog: React.FC = () => {
     const {dialogProps, closeDialog} = useDialog();
 
     if (!dialogProps || !(dialogProps as InfoDialogProps).title) {
-        return null; // or handle the empty state as needed
+        return null;
     }
 
     const {title, message} = dialogProps as InfoDialogProps;

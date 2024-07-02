@@ -1,11 +1,11 @@
 import React from "react";
 import './GameEntry.css';
-import {addDislike, addLike} from "../services/api.ts";
+import {addDislike, addLike, getGameDetails} from "../services/api.ts";
 import {Game} from "../data/Game.ts";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import {Badge, BadgeProps, Button, IconButton, styled} from "@mui/material";
-import {useDialog} from "./dialogs/DialogContext.tsx";
+import {useDialog} from "./dialogs/useDialog.ts";
 import {GameDetailsDialogProps} from "./dialogs/GameDetailsDialog.tsx";
 
 interface GameEntryProps {
@@ -20,7 +20,8 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
 }));
 
 const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
-    if (!game) {
+    const {openDialog, openInfo} = useDialog();
+    if (!game || !openDialog || !openInfo) {
         return null;
     }
 
@@ -63,19 +64,29 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
     const glamFactor = calcGlamFactor(game.likes, game.dislikes);
     const glamString = getGlamString(glamFactor);
 
-    const {openDialog} = useDialog();
 
-    const handleDetailsClick = () => {
-        const gameDetailsProps: GameDetailsDialogProps = {
-            title: game.title,
-            developerName: game.developer,
-            releaseDate: game.releaseDate,
-            score: glamString,
-            youtubeTrailer: "https://www.youtube.com/embed/JUCMqEI9AWg?si=Pr8AkS2SV-MCvq3Q",
-            description: "Das von über 50 Magazinen zum Spiel des Jahres gekürte Spiel-Debüt von Valve ist eine Kombination aus Action und Adventure mit preisgekrönter Technologie, die eine beängstigende realistische Welt entstehen lässt, in der die Spieler Köpfchen brauchen, um zu überleben."
+    const handleDetailsClick = async () => {
+
+        const fetchDetails = async () => {
+            try {
+                const details = await getGameDetails(game.id);
+
+                const gameDetailsProps: GameDetailsDialogProps = {
+                    title: game.title,
+                    developerName: game.developer,
+                    releaseDate: game.releaseDate,
+                    score: glamString,
+                    youtubeTrailer: details.trailerUrl,
+                    description: details.description
+                }
+
+                openDialog('gameDetails', gameDetailsProps);
+            } catch (error) {
+                openInfo("Game not found", error.message);
+            }
         }
 
-        openDialog('gameDetails', gameDetailsProps);
+        await fetchDetails();
     };
 
     return (
@@ -89,9 +100,9 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
                 <h4 className="detailItem"><b>{game.title}</b></h4>
                 <div className="detailItem">
                     <p className="detailItem">Glam score: <b>{glamString}</b></p>
-                    <p className="detailItem">Developer: {game.developer}</p>
-                    <p className="detailItem">Release-Date: {game.releaseDate}</p>
-                    <p className="detailItem">Platforms: {game.platforms?.join(', ')}</p>
+                    <p className="detailItem">Entwickler: {game.developer}</p>
+                    <p className="detailItem">Erscheinungsjahr: {game.releaseDate}</p>
+                    <p className="detailItem">Plattformen: {game.platforms?.join(', ')}</p>
                 </div>
                 <div className="detailItem buttonList">
                     <IconButton value="thumbs-up" aria-label="thumbs up" onClick={handleAddLike}>

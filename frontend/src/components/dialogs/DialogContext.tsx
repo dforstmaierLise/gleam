@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useState} from 'react';
+import React, {createContext, ReactNode, useState} from 'react';
 import {InfoDialogProps} from "./InfoDialog.tsx";
 import {GameDetailsDialogProps} from "./GameDetailsDialog.tsx";
 
@@ -13,10 +13,11 @@ interface DialogContextProps {
     dialogType: DialogType | null;
     dialogProps: DialogPropsMap[DialogType] | null;
     openDialog: <T extends DialogType>(type: T, props: DialogPropsMap[T]) => void;
+    openInfo: (title: string, message: string) => void;
     closeDialog: () => void;
 }
 
-const DialogContext = createContext<DialogContextProps | undefined>(undefined);
+export const DialogContext = createContext<DialogContextProps | undefined>(undefined);
 
 export const DialogProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [dialogType, setDialogType] = useState<DialogType | null>(null);
@@ -27,22 +28,24 @@ export const DialogProvider: React.FC<{ children: ReactNode }> = ({children}) =>
         setDialogProps(props);
     };
 
+    const openInfo = (title: string, message: string) => {
+        setDialogType('info')
+
+        const infoProps: InfoDialogProps = {
+            title: title,
+            message: message
+        }
+        setDialogProps(infoProps);
+    }
+
     const closeDialog = () => {
         setDialogType(null);
         setDialogProps(null);
     };
 
     return (
-        <DialogContext.Provider value={{dialogType, dialogProps, openDialog, closeDialog}}>
+        <DialogContext.Provider value={{dialogType, dialogProps, openDialog, openInfo, closeDialog}}>
             {children}
         </DialogContext.Provider>
     );
-};
-
-export const useDialog = () => {
-    const context = useContext(DialogContext);
-    if (!context) {
-        throw new Error('useDialog must be used within a DialogProvider');
-    }
-    return context;
 };

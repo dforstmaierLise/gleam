@@ -1,6 +1,6 @@
 import React from 'react';
-import {Dialog, DialogContent, DialogTitle, Stack, TextField, Typography} from '@mui/material';
-import {useDialog} from './DialogContext';
+import {Dialog, DialogContent, DialogTitle, Stack, Typography} from '@mui/material';
+import {useDialog} from './useDialog.ts';
 import {default as _ReactPlayer} from 'react-player/lazy';
 import {ReactPlayerProps} from "react-player/types/lib";
 
@@ -19,7 +19,7 @@ const GameDetailsDialog: React.FC = () => {
     const {dialogProps, closeDialog} = useDialog();
 
     if (!dialogProps || !(dialogProps as GameDetailsDialogProps).title) {
-        return null; // or handle the empty state as needed
+        return null;
     }
 
     const {
@@ -30,6 +30,7 @@ const GameDetailsDialog: React.FC = () => {
         score,
         youtubeTrailer
     } = dialogProps as GameDetailsDialogProps;
+
 
     return (
         <Dialog open={!!title} onClose={closeDialog} maxWidth="md" fullWidth>
@@ -49,10 +50,6 @@ const GameDetailsDialog: React.FC = () => {
                     <Typography variant="body2"><strong>Erscheinungsjahr:</strong> {releaseDate}</Typography>
                     <Typography variant="body2"><strong>Entwickler:</strong> {developerName}</Typography>
                     <Typography variant="body2"><strong>Glam Score:</strong> {score}</Typography>
-                    <TextField
-                        fullWidth label="fullWidth" id="fullWidth"
-                        InputProps={{sx: {height: 150}}}
-                    />
                 </Stack>
             </DialogContent>
         </Dialog>
