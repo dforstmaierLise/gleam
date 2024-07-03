@@ -39,11 +39,8 @@ public class GameService {
     }
 
     public List<Game> getGames(String[] platforms, String prefix) {
-        var platformsList = Arrays.stream(platforms).toList();
-        return gameRepository.findAll().stream()
-                .filter(game -> game.getPlatforms().stream().anyMatch(platformsList::contains))
-                .filter(game -> game.getTitle().toLowerCase().startsWith(prefix.toLowerCase()))
-                .collect(Collectors.toList());
+        var platformsList = Arrays.asList(platforms);
+        return gameRepository.findByPlatformsAndTitle(platformsList, prefix);
     }
 
     public List<String> getGameTitlesByPrefix(String[] platforms, String prefix) {

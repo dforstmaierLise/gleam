@@ -46,7 +46,7 @@ const SearchByName: React.FC<SearchByNameProps> = ({platformFilter, onPrefixChan
     }, [inputValue, platformFilter]);
 
     const handleSelectionChange = (event: React.ChangeEvent<unknown>, value: string | null) => {
-        onPrefixChange(value === null ? "" : value);
+        onPrefixChange(value ?? "");
     };
 
     return (
