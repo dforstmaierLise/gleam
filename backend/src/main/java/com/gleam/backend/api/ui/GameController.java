@@ -68,4 +68,11 @@ public class GameController extends ApiController {
         return publishAndCreateResponse(event, future);
     }
 
+    @GetMapping("/updateAllEntriesFromIgdb")
+    public ResponseEntity<Boolean> updateAllEntriesFromIgdb(@RequestParam(value = "secret") String secret, @RequestParam(value = "clientId") String clientId) {
+        var future = new CompletableFuture<Boolean>();
+        var event = new UpdateAllEntriesFromIgdbEvent(secret, clientId, future);
+        return publishAndCreateResponse(event, future);
+    }
+
 }

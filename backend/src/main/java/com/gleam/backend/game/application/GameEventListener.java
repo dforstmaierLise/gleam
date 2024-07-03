@@ -78,11 +78,17 @@ public class GameEventListener {
 
     @EventListener
     public void handleAddGameDetailsEvent(AddGameDetailsEvent event) {
-        var gameDetails = gameService.addGameDetails(
+        var gameDetails = gameService.addOrUpdateGameDetails(
                 event.getGameId(),
                 event.getDescription(),
                 event.getTrailerUrl());
         var gameDetailsDto = gameDetailsMapper.toDto(gameDetails);
         event.getFuture().complete(gameDetailsDto);
+    }
+
+    @EventListener
+    public void updateAllEntriesFromIgdbEvent(UpdateAllEntriesFromIgdbEvent event) {
+        gameService.updateAllEntries(event.getSecret(), event.getClientId());
+        event.getFuture().complete(true);
     }
 }
