@@ -1,10 +1,7 @@
 import React from 'react';
 import {Dialog, DialogContent, DialogTitle, Stack, Typography} from '@mui/material';
 import {useDialog} from './useDialog.ts';
-import {default as _ReactPlayer} from 'react-player/lazy';
-import {ReactPlayerProps} from "react-player/types/lib";
-
-const ReactPlayer = _ReactPlayer as unknown as React.FC<ReactPlayerProps>;
+import ReactPlayer from 'react-player/lazy'
 
 export type GameDetailsDialogProps = {
     title: string;
