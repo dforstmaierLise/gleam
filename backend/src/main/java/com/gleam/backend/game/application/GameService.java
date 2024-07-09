@@ -4,6 +4,7 @@ import com.gleam.backend.game.domain.Game;
 import com.gleam.backend.game.infrastructure.GameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,9 +38,13 @@ public class GameService {
         gameRepository.save(game);
     }
 
-    public List<Game> getGamesByPlatform(List<String> platforms) {
-        return gameRepository.findAll().stream()
-                .filter(game -> game.getPlatforms().stream().anyMatch(platforms::contains))
-                .collect(Collectors.toList());
+    public List<Game> getGames(String[] platforms, String prefix) {
+        var platformsList = Arrays.asList(platforms);
+        return gameRepository.findByPlatformsAndTitle(platformsList, prefix);
+    }
+
+    public List<String> getGameTitlesByPrefix(String[] platforms, String prefix) {
+        var games = getGames(platforms, prefix);
+        return games.stream().map(Game::getTitle).collect(Collectors.toList());
     }
 }

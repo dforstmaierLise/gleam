@@ -1,14 +1,9 @@
 package com.gleam.backend.game.application;
 
-import com.gleam.backend.common.event.AddDislikeEvent;
-import com.gleam.backend.common.event.AddLikeEvent;
-import com.gleam.backend.common.event.GetAllGamesEvent;
-import com.gleam.backend.common.event.GetGamesByPlatformEvent;
+import com.gleam.backend.common.event.*;
 import com.gleam.backend.game.mapper.GameMapper;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 @Component
 public class GameEventListener {
@@ -53,9 +48,16 @@ public class GameEventListener {
         event.getFuture().complete(gameDto);
     }
 
+
     @EventListener
-    public void handleGetGamesByPlatformEvent(GetGamesByPlatformEvent event) {
-        var games = gameService.getGamesByPlatform(Arrays.stream(event.getPlatforms()).toList());
+    public void handleGetGameTitlesByPrefixEvent(GetGameTitlesByPrefixEvent event) {
+        var games = gameService.getGameTitlesByPrefix(event.getPlatforms(), event.getPrefix());
+        event.getFuture().complete(games.toArray(new String[0]));
+    }
+
+    @EventListener
+    public void handleGetGamesEvent(GetGamesEvent event) {
+        var games = gameService.getGames(event.getPlatforms(), event.getPrefix());
         var gamesDto = gameMapper.toDtoList(games);
         event.getFuture().complete(gamesDto);
     }
