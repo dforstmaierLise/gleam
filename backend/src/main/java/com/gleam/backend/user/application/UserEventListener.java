@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserEventListener {
+public class UserEventListener extends com.gleam.backend.common.event.EventListener {
     private final UserService userService;
     private final UserMapper userMapper;
 

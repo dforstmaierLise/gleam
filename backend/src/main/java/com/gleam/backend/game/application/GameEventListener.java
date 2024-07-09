@@ -1,18 +1,21 @@
 package com.gleam.backend.game.application;
 
 import com.gleam.backend.common.event.*;
+import com.gleam.backend.game.mapper.GameDetailsMapper;
 import com.gleam.backend.game.mapper.GameMapper;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GameEventListener {
+public class GameEventListener extends com.gleam.backend.common.event.EventListener {
     private final GameService gameService;
     private final GameMapper gameMapper;
+    private final GameDetailsMapper gameDetailsMapper;
 
-    public GameEventListener(GameService gameService, GameMapper gameMapper) {
+    public GameEventListener(GameService gameService, GameMapper gameMapper, GameDetailsMapper gameDetailsMapper) {
         this.gameService = gameService;
         this.gameMapper = gameMapper;
+        this.gameDetailsMapper = gameDetailsMapper;
     }
 
     @EventListener
@@ -26,6 +29,7 @@ public class GameEventListener {
     public void handleAddLikeEvent(AddLikeEvent event) {
         var gameOptional = gameService.getGame(event.getGameId());
         if (gameOptional.isEmpty()) {
+            handleIdNotFound(event.getFuture());
             return;
         }
 
@@ -39,6 +43,7 @@ public class GameEventListener {
     public void handleAddDislikeEvent(AddDislikeEvent event) {
         var gameOptional = gameService.getGame(event.getGameId());
         if (gameOptional.isEmpty()) {
+            handleIdNotFound(event.getFuture());
             return;
         }
 
@@ -60,5 +65,27 @@ public class GameEventListener {
         var games = gameService.getGames(event.getPlatforms(), event.getPrefix());
         var gamesDto = gameMapper.toDtoList(games);
         event.getFuture().complete(gamesDto);
+    }
+
+    @EventListener
+    public void handleGetGameDetailsEvent(GetGameDetailsEvent event) {
+        var details = gameService.getGameDetails(event.getGameId());
+        if (details.isEmpty()) {
+            handleIdNotFound(event.getFuture());
+            return;
+        }
+
+        var gameDetailsDto = gameDetailsMapper.toDto(details.get());
+        event.getFuture().complete(gameDetailsDto);
+    }
+
+    @EventListener
+    public void handleAddGameDetailsEvent(AddGameDetailsEvent event) {
+        var gameDetails = gameService.addGameDetails(
+                event.getGameId(),
+                event.getDescription(),
+                event.getTrailerUrl());
+        var gameDetailsDto = gameDetailsMapper.toDto(gameDetails);
+        event.getFuture().complete(gameDetailsDto);
     }
 }

@@ -1,10 +1,12 @@
 import React from "react";
 import './GameEntry.css';
-import {addDislike, addLike} from "../services/api.ts";
+import {addDislike, addLike, getGameDetails} from "../services/api.ts";
 import {Game} from "../data/Game.ts";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import {Badge, BadgeProps, IconButton, styled} from "@mui/material";
+import {Badge, BadgeProps, Button, IconButton, styled} from "@mui/material";
+import {useDialog} from "./dialogs/useDialog.ts";
+import {GameDetailsDialogProps} from "./dialogs/GameDetailsDialog.tsx";
 
 interface GameEntryProps {
     game: Game;
@@ -18,9 +20,15 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
 }));
 
 const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
-    if (!game) {
-        return null;
+    const {openDialog, openInfo} = useDialog();
+    if (!game || !openDialog || !openInfo) {
+        return (
+            <div className="gameCard">
+                <p>Game not found</p>
+            </div>
+        );
     }
+
 
     const transformGameName = (gameName: string): string => {
         return gameName.toLowerCase().replace(/ /g, '_');
@@ -31,6 +39,10 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
         const factor = likes / sum;
         // Return the exponential value to add more visual emphasis on very good games
         return factor * factor;
+    }
+
+    const getGlamString = (glamFactor: number): string => {
+        return (glamFactor * 100).toFixed(0);
     }
 
     const handleAddLike = async () => {
@@ -54,6 +66,32 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
     const transformedName = transformGameName(game.title);
     const logoUrl = `/images/logo-${transformedName}.webp`;
     const glamFactor = calcGlamFactor(game.likes, game.dislikes);
+    const glamString = getGlamString(glamFactor);
+
+
+    const handleDetailsClick = async () => {
+
+        const fetchDetails = async () => {
+            try {
+                const details = await getGameDetails(game.id);
+
+                const gameDetailsProps: GameDetailsDialogProps = {
+                    title: game.title,
+                    developerName: game.developer,
+                    releaseDate: game.releaseDate,
+                    score: glamString,
+                    youtubeTrailer: details.trailerUrl,
+                    description: details.description
+                }
+
+                openDialog('gameDetails', gameDetailsProps);
+            } catch (error) {
+                openInfo("Game not found", error.message);
+            }
+        }
+
+        await fetchDetails();
+    };
 
     return (
         <div
@@ -65,10 +103,10 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
             <div className="containerDetails">
                 <h4 className="detailItem"><b>{game.title}</b></h4>
                 <div className="detailItem">
-                    <p className="detailItem">Glam score: <b>{(glamFactor * 100).toFixed(0)}</b></p>
-                    <p className="detailItem">Developer: {game.developer}</p>
-                    <p className="detailItem">Release-Date: {game.releaseDate}</p>
-                    <p className="detailItem">Platforms: {game.platforms?.join(', ')}</p>
+                    <p className="detailItem">Glam score: <b>{glamString}</b></p>
+                    <p className="detailItem">Entwickler: {game.developer}</p>
+                    <p className="detailItem">Erscheinungsjahr: {game.releaseDate}</p>
+                    <p className="detailItem">Plattformen: {game.platforms?.join(', ')}</p>
                 </div>
                 <div className="detailItem buttonList">
                     <IconButton value="thumbs-up" aria-label="thumbs up" onClick={handleAddLike}>
@@ -79,6 +117,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
                         <ThumbDownIcon/>
                     </IconButton>
                     <StyledBadge badgeContent={game.dislikes} color="warning" overlap="rectangular" max={9999}/>
+                    <Button onClick={handleDetailsClick}>Details</Button>
                 </div>
             </div>
         </div>

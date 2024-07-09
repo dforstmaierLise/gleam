@@ -1,6 +1,8 @@
 package com.gleam.backend.game.application;
 
 import com.gleam.backend.game.domain.Game;
+import com.gleam.backend.game.domain.GameDetails;
+import com.gleam.backend.game.infrastructure.GameDetailsRepository;
 import com.gleam.backend.game.infrastructure.GameRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final GameDetailsRepository gameDetailsRepository;
 
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, GameDetailsRepository gameDetailsRepository) {
         this.gameRepository = gameRepository;
+        this.gameDetailsRepository = gameDetailsRepository;
     }
 
     public List<Game> getAllGames() {
@@ -46,5 +50,26 @@ public class GameService {
     public List<String> getGameTitlesByPrefix(String[] platforms, String prefix) {
         var games = getGames(platforms, prefix);
         return games.stream().map(Game::getTitle).collect(Collectors.toList());
+    }
+
+    public Optional<GameDetails> getGameDetails(String gameId) {
+        return gameDetailsRepository.findByGameId(gameId);
+    }
+
+    public GameDetails addGameDetails(String gameId, String description, String trailerUrl) {
+
+        var gameDetailsOptional = gameDetailsRepository.findByGameId(gameId);
+
+        if (gameDetailsOptional.isPresent()) {
+            var gameDetails = gameDetailsOptional.get();
+            gameDetails.setDescription(description);
+            gameDetails.setTrailerUrl(trailerUrl);
+            gameDetailsRepository.save(gameDetails);
+            return gameDetails;
+        }
+
+        var gameDetails = new GameDetails(gameId, description, trailerUrl);
+        gameDetailsRepository.save(gameDetails);
+        return gameDetails;
     }
 }
