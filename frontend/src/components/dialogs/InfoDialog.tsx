@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@mui/material';
 import {useDialog} from './useDialog.ts';
 
-export interface InfoDialogProps {
+export type InfoDialogProps = {
     title: string;
     message: string;
 }

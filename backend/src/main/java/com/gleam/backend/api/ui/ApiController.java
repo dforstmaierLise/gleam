@@ -1,6 +1,7 @@
 package com.gleam.backend.api.ui;
 
 import com.gleam.backend.common.event.Event;
+import com.gleam.backend.common.exception.IdNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,10 @@ public abstract class ApiController {
         try {
             T dto = future.get(5, TimeUnit.SECONDS);
             return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (IdNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Request timed out");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

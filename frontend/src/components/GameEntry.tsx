@@ -22,7 +22,11 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
 const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
     const {openDialog, openInfo} = useDialog();
     if (!game || !openDialog || !openInfo) {
-        return null;
+        return (
+            <div className="gameCard">
+                <p>Game not found</p>
+            </div>
+        );
     }
 
 
