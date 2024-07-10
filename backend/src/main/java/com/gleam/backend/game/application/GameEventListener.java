@@ -11,11 +11,13 @@ public class GameEventListener extends com.gleam.backend.common.event.EventListe
     private final GameService gameService;
     private final GameMapper gameMapper;
     private final GameDetailsMapper gameDetailsMapper;
+    private final IgdbService igdbService;
 
-    public GameEventListener(GameService gameService, GameMapper gameMapper, GameDetailsMapper gameDetailsMapper) {
+    public GameEventListener(GameService gameService, GameMapper gameMapper, GameDetailsMapper gameDetailsMapper, IgdbService igdbService) {
         this.gameService = gameService;
         this.gameMapper = gameMapper;
         this.gameDetailsMapper = gameDetailsMapper;
+        this.igdbService = igdbService;
     }
 
     @EventListener
@@ -80,12 +82,8 @@ public class GameEventListener extends com.gleam.backend.common.event.EventListe
     }
 
     @EventListener
-    public void handleAddGameDetailsEvent(AddGameDetailsEvent event) {
-        var gameDetails = gameService.addGameDetails(
-                event.getGameId(),
-                event.getDescription(),
-                event.getTrailerUrl());
-        var gameDetailsDto = gameDetailsMapper.toDto(gameDetails);
-        event.getFuture().complete(gameDetailsDto);
+    public void updateAllEntriesFromIgdbEvent(UpdateAllEntriesFromIgdbEvent event) {
+        igdbService.updateAllEntries(event.getSecret(), event.getClientId());
+        event.getFuture().complete(true);
     }
 }

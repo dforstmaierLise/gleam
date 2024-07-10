@@ -12,6 +12,7 @@ import java.util.List;
 public class Game {
     @Id
     private String id;
+    private String igdbId;
     private String title;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date releaseDate;
@@ -20,4 +21,5 @@ public class Game {
     private int likes;
     private int dislikes;
     private List<String> platforms = new ArrayList<>();
+    private String coverUrl;
 }

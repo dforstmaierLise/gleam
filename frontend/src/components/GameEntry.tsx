@@ -29,11 +29,6 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
         );
     }
 
-
-    const transformGameName = (gameName: string): string => {
-        return gameName.toLowerCase().replace(/ /g, '_');
-    };
-
     const calcGlamFactor = (likes: number, dislikes: number): number => {
         const sum = likes + dislikes;
         const factor = likes / sum;
@@ -63,8 +58,6 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
         }
     }
 
-    const transformedName = transformGameName(game.title);
-    const logoUrl = `/images/logo-${transformedName}.webp`;
     const glamFactor = calcGlamFactor(game.likes, game.dislikes);
     const glamString = getGlamString(glamFactor);
 
@@ -99,7 +92,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
             style={{
                 '--glow-intensity': `${glamFactor}`,
             }}>
-            <img src={logoUrl} alt={"game logo"}/>
+            <img src={game.coverUrl} alt={"game logo"}/>
             <div className="containerDetails">
                 <h4 className="detailItem"><b>{game.title}</b></h4>
                 <div className="detailItem">

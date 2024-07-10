@@ -8,11 +8,13 @@ import java.util.List;
 
 public record GameDto(
         @Id String id,
+        String igdbId,
         String title,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") Date releaseDate,
         String developer,
         List<String> reviewIds,
         int likes,
         int dislikes,
-        List<String> platforms) {
+        List<String> platforms,
+        String coverUrl) {
 }

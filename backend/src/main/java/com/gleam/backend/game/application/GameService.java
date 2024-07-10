@@ -56,8 +56,35 @@ public class GameService {
         return gameDetailsRepository.findByGameId(gameId);
     }
 
-    public GameDetails addGameDetails(String gameId, String description, String trailerUrl) {
+    public Optional<Game> getGameByIgdbId(String igdbId) {
+        return gameRepository.findAll().stream()
+                .filter(g -> g.getIgdbId().equals(igdbId))
+                .findFirst();
+    }
 
+    public void updateGameByIgdb(String igdbId, String coverUrl) {
+
+        var gameOptional = getGameByIgdbId(igdbId);
+        if (gameOptional.isEmpty()) {
+            return;
+        }
+
+        Game gleamGame = gameOptional.get();
+        gleamGame.setIgdbId(igdbId);
+        gleamGame.setCoverUrl(coverUrl);
+        gameRepository.save(gleamGame);
+
+        System.out.println("Updated game: " + gleamGame.getTitle());
+    }
+
+    public void addOrUpdateGameDetailsByIgdb(String igdbId, String description, String trailerUrl) {
+
+        var gameOptional = getGameByIgdbId(igdbId);
+        if (gameOptional.isEmpty()) {
+            return;
+        }
+
+        var gameId = gameOptional.get().getId();
         var gameDetailsOptional = gameDetailsRepository.findByGameId(gameId);
 
         if (gameDetailsOptional.isPresent()) {
@@ -65,11 +92,10 @@ public class GameService {
             gameDetails.setDescription(description);
             gameDetails.setTrailerUrl(trailerUrl);
             gameDetailsRepository.save(gameDetails);
-            return gameDetails;
+            return;
         }
 
         var gameDetails = new GameDetails(gameId, description, trailerUrl);
         gameDetailsRepository.save(gameDetails);
-        return gameDetails;
     }
 }

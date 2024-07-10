@@ -1,5 +1,6 @@
 export type Game = {
     id: string;
+    igdbId: string;
     title: string;
     releaseDate: string;
     developer: string;
@@ -7,4 +8,5 @@ export type Game = {
     likes: number;
     dislikes: number;
     platforms: string[];
+    coverUrl: string;
 }

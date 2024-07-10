@@ -1,6 +1,5 @@
 package com.gleam.backend.api.ui;
 
-import com.gleam.backend.common.dto.AddGameDetailsRequest;
 import com.gleam.backend.common.dto.GameDetailsDto;
 import com.gleam.backend.common.dto.GameDto;
 import com.gleam.backend.common.dto.GetGamesRequest;
@@ -61,11 +60,10 @@ public class GameController extends ApiController {
         return publishAndCreateResponse(event, future);
     }
 
-    @PostMapping("/addGameDetails")
-    public ResponseEntity<GameDetailsDto> addGameDetails(@RequestBody AddGameDetailsRequest request) {
-        var future = new CompletableFuture<GameDetailsDto>();
-        var event = new AddGameDetailsEvent(request.gameId(), request.description(), request.trailerUrl(), future);
+    @GetMapping("/updateAllEntriesFromIgdb")
+    public ResponseEntity<Boolean> updateAllEntriesFromIgdb(@RequestParam(value = "secret") String secret, @RequestParam(value = "clientId") String clientId) {
+        var future = new CompletableFuture<Boolean>();
+        var event = new UpdateAllEntriesFromIgdbEvent(secret, clientId, future);
         return publishAndCreateResponse(event, future);
     }
-
 }
