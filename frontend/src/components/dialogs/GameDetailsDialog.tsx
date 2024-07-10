@@ -1,12 +1,9 @@
 import React from 'react';
 import {Dialog, DialogContent, DialogTitle, Stack, Typography} from '@mui/material';
 import {useDialog} from './useDialog.ts';
-import {default as _ReactPlayer} from 'react-player/lazy';
-import {ReactPlayerProps} from "react-player/types/lib";
+import ReactPlayer from 'react-player/lazy'
 
-const ReactPlayer = _ReactPlayer as unknown as React.FC<ReactPlayerProps>;
-
-export interface GameDetailsDialogProps {
+export type GameDetailsDialogProps = {
     title: string;
     description: string;
     releaseDate: string;
@@ -18,8 +15,17 @@ export interface GameDetailsDialogProps {
 const GameDetailsDialog: React.FC = () => {
     const {dialogProps, closeDialog} = useDialog();
 
-    if (!dialogProps || !(dialogProps as GameDetailsDialogProps).title) {
-        return null;
+    if (dialogProps === null) {
+        return (
+            <Dialog open={true} onClose={closeDialog} maxWidth="md" fullWidth>
+                <DialogTitle> Id not found </DialogTitle>
+                <DialogContent>
+                    <Stack spacing={2}>
+                        <Typography variant="body1">Could not find any details.</Typography>
+                    </Stack>
+                </DialogContent>
+            </Dialog>
+        );
     }
 
     const {

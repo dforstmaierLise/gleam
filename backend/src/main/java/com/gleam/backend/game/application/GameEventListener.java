@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GameEventListener {
+public class GameEventListener extends com.gleam.backend.common.event.EventListener {
     private final GameService gameService;
     private final GameMapper gameMapper;
     private final GameDetailsMapper gameDetailsMapper;
@@ -29,6 +29,7 @@ public class GameEventListener {
     public void handleAddLikeEvent(AddLikeEvent event) {
         var gameOptional = gameService.getGame(event.getGameId());
         if (gameOptional.isEmpty()) {
+            handleIdNotFound(event.getFuture());
             return;
         }
 
@@ -42,6 +43,7 @@ public class GameEventListener {
     public void handleAddDislikeEvent(AddDislikeEvent event) {
         var gameOptional = gameService.getGame(event.getGameId());
         if (gameOptional.isEmpty()) {
+            handleIdNotFound(event.getFuture());
             return;
         }
 
@@ -69,6 +71,7 @@ public class GameEventListener {
     public void handleGetGameDetailsEvent(GetGameDetailsEvent event) {
         var details = gameService.getGameDetails(event.getGameId());
         if (details.isEmpty()) {
+            handleIdNotFound(event.getFuture());
             return;
         }
 

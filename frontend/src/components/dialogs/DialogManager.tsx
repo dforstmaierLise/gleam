@@ -3,11 +3,8 @@ import {useDialog} from './useDialog.ts';
 import InfoDialog from './InfoDialog';
 import GameDetailsDialog from "./GameDetailsDialog.tsx";
 
-const DialogManager: React.FC = () => {
+const DialogManager: React.FC | null = () => {
     const {dialogType} = useDialog();
-    if (!dialogType) {
-        return null;
-    }
 
     switch (dialogType) {
         case 'info':
