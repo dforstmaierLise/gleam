@@ -13,7 +13,6 @@ interface DialogContextProps {
     dialogType: DialogType | null;
     dialogProps: DialogPropsMap[DialogType] | null;
     openDialog: <T extends DialogType>(type: T, props: DialogPropsMap[T]) => void;
-    openInfo: (title: string, message: string) => void;
     closeDialog: () => void;
 }
 
@@ -28,23 +27,13 @@ export const DialogProvider: React.FC<{ children: ReactNode }> = ({children}) =>
         setDialogProps(props);
     };
 
-    const openInfo = (title: string, message: string) => {
-        setDialogType('info')
-
-        const infoProps: InfoDialogProps = {
-            title: title,
-            message: message
-        }
-        setDialogProps(infoProps);
-    }
-
     const closeDialog = () => {
         setDialogType(null);
         setDialogProps(null);
     };
 
     return (
-        <DialogContext.Provider value={{dialogType, dialogProps, openDialog, openInfo, closeDialog}}>
+        <DialogContext.Provider value={{dialogType, dialogProps, openDialog, closeDialog}}>
             {children}
         </DialogContext.Provider>
     );
