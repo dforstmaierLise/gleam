@@ -20,8 +20,8 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
 }));
 
 const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
-    const {openDialog, openInfo} = useDialog();
-    if (!game || !openDialog || !openInfo) {
+    const {openDialog} = useDialog();
+    if (!game || !openDialog) {
         return (
             <div className="gameCard">
                 <p>Game not found</p>
@@ -79,7 +79,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
 
                 openDialog('gameDetails', gameDetailsProps);
             } catch (error) {
-                openInfo("Game not found", error.message);
+                openDialog('info', {title: "Game not found", message: error.message});
             }
         }
 

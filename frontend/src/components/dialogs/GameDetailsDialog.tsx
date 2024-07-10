@@ -28,34 +28,28 @@ const GameDetailsDialog: React.FC = () => {
         );
     }
 
-    const {
-        title,
-        description,
-        releaseDate,
-        developerName,
-        score,
-        youtubeTrailer
-    } = dialogProps as GameDetailsDialogProps;
-
+    const gameDetailsProps = dialogProps as GameDetailsDialogProps;
 
     return (
-        <Dialog open={!!title} onClose={closeDialog} maxWidth="md" fullWidth>
+        <Dialog open={true} onClose={closeDialog} maxWidth="md" fullWidth>
             <ReactPlayer
-                url={youtubeTrailer}
+                url={gameDetailsProps.youtubeTrailer}
                 playing={true}
                 width="100%"
                 height="400px"
                 loop={true}
             />
             <DialogTitle>
-                {title}
+                {gameDetailsProps.title}
             </DialogTitle>
             <DialogContent>
                 <Stack spacing={2}>
-                    <Typography variant="body1">{description}</Typography>
-                    <Typography variant="body2"><strong>Erscheinungsjahr:</strong> {releaseDate}</Typography>
-                    <Typography variant="body2"><strong>Entwickler:</strong> {developerName}</Typography>
-                    <Typography variant="body2"><strong>Glam Score:</strong> {score}</Typography>
+                    <Typography variant="body1">{gameDetailsProps.description}</Typography>
+                    <Typography variant="body2"><strong>Erscheinungsjahr:</strong> {gameDetailsProps.releaseDate}
+                    </Typography>
+                    <Typography variant="body2"><strong>Entwickler:</strong> {gameDetailsProps.developerName}
+                    </Typography>
+                    <Typography variant="body2"><strong>Glam Score:</strong> {gameDetailsProps.score}</Typography>
                 </Stack>
             </DialogContent>
         </Dialog>
