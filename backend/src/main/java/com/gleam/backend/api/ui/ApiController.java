@@ -2,6 +2,7 @@ package com.gleam.backend.api.ui;
 
 import com.gleam.backend.common.event.Event;
 import com.gleam.backend.common.exception.IdNotFoundException;
+import com.gleam.backend.common.exception.IllegalUsernameException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ public abstract class ApiController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalUsernameException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
