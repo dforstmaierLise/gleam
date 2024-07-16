@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {getGameTitlesWithPrefix} from "../services/api.ts";
 import {Autocomplete, CircularProgress, TextField} from "@mui/material";
 import {GetGamesRequest} from "../data/GetGamesRequest.ts";
+import {useQuery} from "@tanstack/react-query";
 
 interface SearchByNameProps {
     platformFilter: string[];
@@ -10,40 +11,15 @@ interface SearchByNameProps {
 
 const SearchByName: React.FC<SearchByNameProps> = ({platformFilter, onPrefixChange}) => {
     const [inputValue, setInputValue] = useState<string>('');
-    const [suggestedGames, setSuggestedGames] = useState<string[]>([]);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchTitles = async () => {
-            if (inputValue.length < 2) {
-                setSuggestedGames([]);
-                return;
-            }
-
-            setLoading(true);
-
-            try {
-                const request: GetGamesRequest = {
-                    platforms: platformFilter,
-                    prefix: inputValue
-                }
-                const suggestions = await getGameTitlesWithPrefix(request);
-                setSuggestedGames(suggestions);
-            } catch (error) {
-                setSuggestedGames([]);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        // Debounce API call to reduce amount of calls.
-        const timeoutId = setTimeout(() => {
-            fetchTitles();
-        }, 300);
-
-        return () => clearTimeout(timeoutId);
-
-    }, [inputValue, platformFilter]);
+    const getGamesRequest: GetGamesRequest = {
+        platforms: platformFilter,
+        prefix: inputValue
+    };
+    const {data, isLoading} = useQuery<string[]>({
+        queryKey: ['getGameTitlesWithPrefix', getGamesRequest],
+        queryFn: () => getGameTitlesWithPrefix(getGamesRequest),
+        enabled: inputValue.length > 1
+    });
 
     const handleSelectionChange = (event: React.ChangeEvent<unknown>, value: string | null) => {
         onPrefixChange(value ?? "");
@@ -52,7 +28,7 @@ const SearchByName: React.FC<SearchByNameProps> = ({platformFilter, onPrefixChan
     return (
         <Autocomplete
             freeSolo
-            options={suggestedGames}
+            options={data ?? []}
             inputValue={inputValue}
             onInputChange={(event, value) => setInputValue(value)}
             onChange={handleSelectionChange}
@@ -65,7 +41,7 @@ const SearchByName: React.FC<SearchByNameProps> = ({platformFilter, onPrefixChan
                         ...params.InputProps,
                         endAdornment: (
                             <>
-                                {loading ? <CircularProgress color="inherit" size={20}/> : null}
+                                {isLoading ? <CircularProgress color="inherit" size={20}/> : null}
                                 {params.InputProps.endAdornment}
                             </>
                         )

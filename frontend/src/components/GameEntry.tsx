@@ -7,6 +7,8 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import {Badge, BadgeProps, Button, IconButton, styled} from "@mui/material";
 import {useDialog} from "./dialogs/useDialog.ts";
 import {GameDetailsDialogProps} from "./dialogs/GameDetailsDialog.tsx";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {GameDetails} from "../data/GameDetails.ts";
 
 interface GameEntryProps {
     game: Game;
@@ -21,6 +23,23 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
 
 const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
     const {openDialog} = useDialog();
+
+    const {refetch: fetchGameDetails} = useQuery<GameDetails>({
+        queryKey: ['getGameDetails', game],
+        queryFn: () => getGameDetails(game.id),
+        enabled: false
+    });
+
+    const addLikeMutation = useMutation({
+        mutationFn: (gameId: string) => addLike(gameId),
+        onSuccess: onLike
+    });
+
+    const addDislikeMutation = useMutation({
+        mutationFn: (gameId: string) => addDislike(gameId),
+        onSuccess: onLike
+    });
+
     if (!game || !openDialog) {
         return (
             <div className="gameCard">
@@ -28,6 +47,7 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
             </div>
         );
     }
+
 
     const calcGlamFactor = (likes: number, dislikes: number): number => {
         const sum = likes + dislikes;
@@ -40,50 +60,29 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
         return (glamFactor * 100).toFixed(0);
     }
 
-    const handleAddLike = async () => {
-        try {
-            await addLike(game.id);
-            onLike();
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const handleAddDislike = async () => {
-        try {
-            await addDislike(game.id);
-            onLike();
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const glamFactor = calcGlamFactor(game.likes, game.dislikes);
     const glamString = getGlamString(glamFactor);
 
 
     const handleDetailsClick = async () => {
 
-        const fetchDetails = async () => {
-            try {
-                const details = await getGameDetails(game.id);
-
+        try {
+            const result = await fetchGameDetails();
+            if (result.data) {
                 const gameDetailsProps: GameDetailsDialogProps = {
                     title: game.title,
                     developerName: game.developer,
                     releaseDate: game.releaseDate,
                     score: glamString,
-                    youtubeTrailer: details.trailerUrl,
-                    description: details.description
+                    youtubeTrailer: result.data.trailerUrl,
+                    description: result.data.description
                 }
 
                 openDialog('gameDetails', gameDetailsProps);
-            } catch (error) {
-                openDialog('info', {title: "Game not found", message: error.message});
             }
+        } catch (error) {
+            openDialog('info', {title: "Game not found", message: error.message});
         }
-
-        await fetchDetails();
     };
 
     return (
@@ -97,16 +96,22 @@ const GameEntry: React.FC<GameEntryProps> = ({game, onLike}) => {
                 <h4 className="detailItem"><b>{game.title}</b></h4>
                 <div className="detailItem">
                     <p className="detailItem">Glam score: <b>{glamString}</b></p>
-                    <p className="detailItem">Entwickler: {game.developer}</p>
-                    <p className="detailItem">Erscheinungsjahr: {game.releaseDate}</p>
-                    <p className="detailItem">Plattformen: {game.platforms?.join(', ')}</p>
+                    <p className="detailItem">Developer: {game.developer}</p>
+                    <p className="detailItem">Release: {game.releaseDate}</p>
+                    <p className="detailItem">Platforms: {game.platforms?.join(', ')}</p>
                 </div>
                 <div className="detailItem buttonList">
-                    <IconButton value="thumbs-up" aria-label="thumbs up" onClick={handleAddLike}>
+                    <IconButton value="thumbs-up" aria-label="thumbs up"
+                                onClick={() => {
+                                    addLikeMutation.mutate(game.id)
+                                }}>
                         <ThumbUpIcon/>
                     </IconButton>
                     <StyledBadge badgeContent={game.likes} color="primary" overlap="rectangular" max={9999}/>
-                    <IconButton value="thumbs-down" aria-label="thumbs down" onClick={handleAddDislike}>
+                    <IconButton value="thumbs-down" aria-label="thumbs down"
+                                onClick={() => {
+                                    addDislikeMutation.mutate(game.id)
+                                }}>
                         <ThumbDownIcon/>
                     </IconButton>
                     <StyledBadge badgeContent={game.dislikes} color="warning" overlap="rectangular" max={9999}/>

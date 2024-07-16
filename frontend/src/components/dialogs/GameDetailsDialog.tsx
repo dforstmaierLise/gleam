@@ -45,9 +45,9 @@ const GameDetailsDialog: React.FC = () => {
             <DialogContent>
                 <Stack spacing={2}>
                     <Typography variant="body1">{gameDetailsProps.description}</Typography>
-                    <Typography variant="body2"><strong>Erscheinungsjahr:</strong> {gameDetailsProps.releaseDate}
+                    <Typography variant="body2"><strong>Release:</strong> {gameDetailsProps.releaseDate}
                     </Typography>
-                    <Typography variant="body2"><strong>Entwickler:</strong> {gameDetailsProps.developerName}
+                    <Typography variant="body2"><strong>Developer:</strong> {gameDetailsProps.developerName}
                     </Typography>
                     <Typography variant="body2"><strong>Glam Score:</strong> {gameDetailsProps.score}</Typography>
                 </Stack>
